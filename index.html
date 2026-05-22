@@ -1,1059 +1,2205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Python File Handling — Class 12 CS Notes</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Electrostatics — JEE Master</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital@1&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
 <style>
-  :root {
-    --bg: #0f1117;
-    --surface: #171b26;
-    --surface2: #1e2330;
-    --surface3: #252b3b;
-    --border: rgba(255,255,255,0.07);
-    --border2: rgba(255,255,255,0.12);
-    --text: #e8eaf0;
-    --muted: #8892a4;
-    --dim: #5a6478;
+:root{
+  --bg:#0a0c14;
+  --surface:#111420;
+  --card:#181d2e;
+  --accent:#4fc3f7;
+  --accent2:#f06292;
+  --accent3:#81c784;
+  --accent4:#ffb74d;
+  --text:#e8eaf6;
+  --muted:#7986a0;
+  --border:#1e2538;
+  --glow:0 0 24px rgba(79,195,247,0.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
 
-    --blue: #4f8ef7;
-    --blue-dim: rgba(79,142,247,0.12);
-    --blue-glow: rgba(79,142,247,0.25);
-    --teal: #2dd4bf;
-    --teal-dim: rgba(45,212,191,0.1);
-    --amber: #f59e0b;
-    --amber-dim: rgba(245,158,11,0.1);
-    --coral: #f97316;
-    --coral-dim: rgba(249,115,22,0.1);
-    --green: #22c55e;
-    --green-dim: rgba(34,197,94,0.1);
-    --purple: #a78bfa;
-    --purple-dim: rgba(167,139,250,0.1);
-    --pink: #ec4899;
-    --pink-dim: rgba(236,72,153,0.1);
-    --red: #ef4444;
-    --red-dim: rgba(239,68,68,0.1);
-  }
+/* Grain overlay */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:999;opacity:.5;
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(10,12,20,0.92);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:0;
+  padding:0 24px;height:60px;
+}
+.nav-brand{
+  font-family:'Space Mono',monospace;
+  font-size:15px;font-weight:700;
+  color:var(--accent);
+  margin-right:auto;
+  letter-spacing:-.5px;
+}
+.nav-tabs{display:flex;gap:2px}
+.nav-tab{
+  padding:8px 16px;border:none;background:none;
+  color:var(--muted);cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
+  border-radius:8px;transition:all .2s;
+}
+.nav-tab:hover{color:var(--text);background:var(--border)}
+.nav-tab.active{color:var(--accent);background:rgba(79,195,247,.1)}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Outfit', sans-serif;
-    font-size: 15px;
-    line-height: 1.7;
-  }
+/* HERO */
+.hero{
+  padding:120px 24px 60px;
+  text-align:center;
+  background:radial-gradient(ellipse 80% 50% at 50% 0%, rgba(79,195,247,.08) 0%, transparent 70%);
+}
+.hero h1{
+  font-family:'Space Mono',monospace;
+  font-size:clamp(32px,6vw,64px);
+  font-weight:700;
+  background:linear-gradient(135deg,var(--accent),#7c4dff,var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  line-height:1.1;margin-bottom:16px;
+}
+.hero p{color:var(--muted);font-size:18px;max-width:540px;margin:0 auto 36px}
+.pill-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:48px}
+.pill{
+  padding:6px 16px;border-radius:100px;
+  font-size:12px;font-weight:600;font-family:'Space Mono',monospace;
+  border:1px solid;
+}
+.pill-blue{border-color:var(--accent);color:var(--accent);background:rgba(79,195,247,.07)}
+.pill-pink{border-color:var(--accent2);color:var(--accent2);background:rgba(240,98,146,.07)}
+.pill-green{border-color:var(--accent3);color:var(--accent3);background:rgba(129,199,132,.07)}
 
-  /* ── HEADER ── */
-  .page-header {
-    padding: 60px 40px 48px;
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-  }
-  .page-header::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(79,142,247,0.15), transparent);
-    pointer-events: none;
-  }
-  .chapter-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--blue);
-    margin-bottom: 14px;
-  }
-  .page-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(32px, 5vw, 54px);
-    line-height: 1.15;
-    color: var(--text);
-    margin-bottom: 16px;
-  }
-  .page-title em {
-    color: var(--blue);
-    font-style: italic;
-  }
-  .page-subtitle {
-    color: var(--muted);
-    font-size: 15px;
-    font-weight: 300;
-  }
-  .toc-pills {
-    display: flex; flex-wrap: wrap; gap: 8px;
-    justify-content: center;
-    margin-top: 28px;
-  }
-  .toc-pill {
-    display: flex; align-items: center; gap: 6px;
-    padding: 6px 14px;
-    border-radius: 100px;
-    font-size: 12px; font-weight: 500;
-    cursor: pointer;
-    border: 1px solid;
-    text-decoration: none;
-    transition: opacity 0.2s;
-  }
-  .toc-pill:hover { opacity: 0.75; }
-  .pill-text  { border-color: rgba(79,142,247,0.35); background: var(--blue-dim); color: var(--blue); }
-  .pill-bin   { border-color: rgba(245,158,11,0.35); background: var(--amber-dim); color: var(--amber); }
-  .pill-csv   { border-color: rgba(34,197,94,0.35);  background: var(--green-dim); color: var(--green); }
+/* SECTION */
+section{display:none;padding:80px 0 60px;max-width:1100px;margin:0 auto;padding-left:20px;padding-right:20px}
+section.active{display:block}
 
-  /* ── LAYOUT ── */
-  .content { max-width: 960px; margin: 0 auto; padding: 0 24px 80px; }
+/* TOPIC GRID */
+.topic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:40px}
+.topic-card{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:24px;cursor:pointer;transition:all .25s;
+  position:relative;overflow:hidden;
+}
+.topic-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(79,195,247,.04),transparent);
+  opacity:0;transition:.3s;
+}
+.topic-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:var(--glow)}
+.topic-card:hover::before{opacity:1}
+.topic-num{
+  font-family:'Space Mono',monospace;font-size:11px;
+  color:var(--muted);margin-bottom:10px;
+}
+.topic-title{font-size:16px;font-weight:600;margin-bottom:8px;color:var(--text)}
+.topic-tag{
+  display:inline-block;font-size:11px;padding:3px 10px;border-radius:100px;
+  background:rgba(79,195,247,.1);color:var(--accent);font-weight:600;
+}
 
-  /* ── SECTION HEADERS ── */
-  .section-divider {
-    margin: 64px 0 0;
-    padding: 40px 36px 36px;
-    border-radius: 16px;
-    border: 1px solid;
-    position: relative;
-    overflow: hidden;
-  }
-  .section-divider::after {
-    content: '';
-    position: absolute;
-    top: 0; right: 0;
-    width: 220px; height: 100%;
-    background: linear-gradient(to left, currentColor, transparent);
-    opacity: 0.03;
-    pointer-events: none;
-  }
-  .sd-text  { border-color: rgba(79,142,247,0.3);  background: var(--blue-dim); }
-  .sd-bin   { border-color: rgba(245,158,11,0.3);  background: var(--amber-dim); }
-  .sd-csv   { border-color: rgba(34,197,94,0.3);   background: var(--green-dim); }
+/* CONTENT PANEL */
+.content-panel{
+  background:var(--card);border:1px solid var(--border);border-radius:20px;
+  overflow:hidden;
+}
+.panel-header{
+  padding:20px 28px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+}
+.panel-back{
+  width:32px;height:32px;border-radius:8px;border:1px solid var(--border);
+  background:none;color:var(--muted);cursor:pointer;font-size:16px;
+  display:flex;align-items:center;justify-content:center;transition:.2s;
+}
+.panel-back:hover{color:var(--text);border-color:var(--accent)}
+.panel-header h2{font-size:20px;font-weight:600;flex:1}
+.panel-body{padding:32px 28px}
 
-  .section-icon {
-    font-size: 36px;
-    line-height: 1;
-    margin-bottom: 10px;
-  }
-  .section-num {
-    font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .sd-text  .section-num { color: var(--blue); }
-  .sd-bin   .section-num { color: var(--amber); }
-  .sd-csv   .section-num { color: var(--green); }
+/* CONCEPT CARD */
+.concept{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:24px;margin-bottom:20px;
+}
+.concept-label{
+  font-family:'Space Mono',monospace;font-size:11px;color:var(--accent);
+  font-weight:700;letter-spacing:.08em;margin-bottom:12px;
+}
+.concept h3{font-size:18px;font-weight:600;margin-bottom:12px}
+.concept p{color:rgba(232,234,246,.8);line-height:1.7;margin-bottom:10px}
+.concept ul{padding-left:20px;color:rgba(232,234,246,.8);line-height:1.8}
+.concept li{margin-bottom:4px}
 
-  .section-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 30px;
-    line-height: 1.2;
-    margin-bottom: 8px;
-  }
-  .section-desc { color: var(--muted); font-size: 14px; }
+/* FORMULA BOX */
+.formula-box{
+  background:#0d1117;border:1px solid rgba(79,195,247,.25);
+  border-left:3px solid var(--accent);border-radius:10px;
+  padding:18px 22px;margin:16px 0;
+  font-family:'Space Mono',monospace;
+}
+.formula-title{font-size:11px;color:var(--accent);font-weight:700;margin-bottom:8px;letter-spacing:.06em}
 
-  /* ── SUB-SECTION ── */
-  .subsection { margin-top: 40px; }
-  .subsection-title {
-    font-size: 17px; font-weight: 600;
-    color: var(--text);
-    margin-bottom: 16px;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .subsection-title .dot {
-    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-  }
-  .dot-blue   { background: var(--blue); }
-  .dot-amber  { background: var(--amber); }
-  .dot-green  { background: var(--green); }
-  .dot-teal   { background: var(--teal); }
-  .dot-purple { background: var(--purple); }
-  .dot-coral  { background: var(--coral); }
+/* KEY POINT */
+.key-point{
+  background:rgba(79,195,247,.06);border:1px solid rgba(79,195,247,.2);
+  border-radius:10px;padding:14px 18px;margin:12px 0;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.key-point-icon{color:var(--accent);font-size:16px;flex-shrink:0;margin-top:2px}
+.key-point p{color:rgba(232,234,246,.85);font-size:14px;line-height:1.6}
 
-  /* ── PROSE ── */
-  p { color: var(--muted); margin-bottom: 14px; }
-  p:last-child { margin-bottom: 0; }
-  strong { color: var(--text); font-weight: 500; }
+.warn-box{
+  background:rgba(255,183,77,.06);border:1px solid rgba(255,183,77,.25);
+  border-radius:10px;padding:14px 18px;margin:12px 0;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.warn-box p{color:rgba(232,234,246,.85);font-size:14px;line-height:1.6}
 
-  /* ── TABLES ── */
-  .table-wrap { overflow-x: auto; margin: 20px 0; border-radius: 12px; border: 1px solid var(--border); }
-  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-  thead tr { background: var(--surface2); }
-  th {
-    padding: 12px 16px;
-    text-align: left;
-    font-weight: 600;
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    border-bottom: 1px solid var(--border);
-  }
-  td {
-    padding: 11px 16px;
-    border-bottom: 1px solid var(--border);
-    vertical-align: top;
-    color: var(--muted);
-  }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: rgba(255,255,255,0.02); }
-  td:first-child { color: var(--text); }
+/* SVG DIAGRAM */
+.diagram-wrap{
+  background:#0d1117;border:1px solid var(--border);border-radius:12px;
+  padding:20px;margin:16px 0;text-align:center;overflow:auto;
+}
+.diagram-caption{font-size:12px;color:var(--muted);margin-top:10px;font-style:italic}
 
-  /* ── CODE ── */
-  code {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12.5px;
-    background: var(--surface3);
-    padding: 2px 6px;
-    border-radius: 5px;
-    color: var(--teal);
-  }
-  pre {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px 22px;
-    overflow-x: auto;
-    margin: 18px 0;
-    position: relative;
-  }
-  pre code {
-    background: none;
-    padding: 0;
-    border-radius: 0;
-    color: var(--text);
-    font-size: 13px;
-    line-height: 1.75;
-  }
-  .pre-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--dim);
-    margin-bottom: 10px;
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .kw  { color: var(--purple); }
-  .fn  { color: var(--blue); }
-  .st  { color: var(--amber); }
-  .cm  { color: var(--dim); font-style: italic; }
-  .num { color: var(--coral); }
+/* TABS inside panel */
+.inner-tabs{display:flex;gap:4px;margin-bottom:24px;padding:4px;
+  background:var(--surface);border-radius:10px;width:fit-content}
+.inner-tab{padding:7px 18px;border:none;background:none;
+  color:var(--muted);cursor:pointer;border-radius:8px;
+  font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;transition:.2s}
+.inner-tab.active{background:var(--card);color:var(--accent)}
 
-  /* ── CALLOUT BOXES ── */
-  .callout {
-    padding: 16px 20px;
-    border-radius: 10px;
-    border-left: 3px solid;
-    margin: 18px 0;
-    font-size: 14px;
-  }
-  .callout-title {
-    font-weight: 600;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .callout p { margin: 0; font-size: 14px; }
+/* FLASHCARD */
+.flashcard-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.fc{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  height:200px;perspective:1000px;cursor:pointer;
+}
+.fc-inner{
+  position:relative;width:100%;height:100%;
+  transform-style:preserve-3d;transition:transform .5s;
+}
+.fc.flipped .fc-inner{transform:rotateY(180deg)}
+.fc-front,.fc-back{
+  position:absolute;inset:0;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;text-align:center;backface-visibility:hidden;
+}
+.fc-front{
+  background:linear-gradient(135deg,var(--card),var(--surface));
+  flex-direction:column;gap:10px;
+}
+.fc-front .q-label{
+  font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);font-weight:700;
+}
+.fc-front p{font-size:15px;font-weight:500;line-height:1.5}
+.fc-back{
+  background:linear-gradient(135deg,rgba(79,195,247,.12),rgba(124,77,255,.08));
+  transform:rotateY(180deg);
+  flex-direction:column;gap:8px;border:1px solid rgba(79,195,247,.3);
+}
+.fc-back .a-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent3);font-weight:700}
+.fc-back p{font-size:14px;color:var(--text);line-height:1.5}
 
-  .callout-note    { background: var(--blue-dim);   border-color: var(--blue);   }
-  .callout-note    .callout-title { color: var(--blue); }
-  .callout-warning { background: var(--amber-dim);  border-color: var(--amber);  }
-  .callout-warning .callout-title { color: var(--amber); }
-  .callout-tip     { background: var(--teal-dim);   border-color: var(--teal);   }
-  .callout-tip     .callout-title { color: var(--teal); }
-  .callout-danger  { background: var(--red-dim);    border-color: var(--red);    }
-  .callout-danger  .callout-title { color: var(--red); }
+/* QUIZ */
+.quiz-wrap{max-width:780px;margin:0 auto}
+.quiz-progress{
+  background:var(--surface);border-radius:100px;height:6px;
+  margin-bottom:32px;overflow:hidden;
+}
+.quiz-progress-inner{height:100%;background:linear-gradient(90deg,var(--accent),#7c4dff);border-radius:100px;transition:.4s}
+.quiz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.quiz-num{font-family:'Space Mono',monospace;font-size:12px;color:var(--muted)}
+.quiz-score-live{font-family:'Space Mono',monospace;font-size:12px;color:var(--accent3)}
+.quiz-question{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:28px;margin-bottom:20px;
+}
+.quiz-q-type{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent2);font-weight:700;margin-bottom:10px}
+.quiz-q-text{font-size:17px;font-weight:500;line-height:1.6;margin-bottom:16px}
+.quiz-q-img{
+  background:#0d1117;border:1px solid var(--border);border-radius:8px;
+  padding:12px;text-align:center;margin-bottom:16px;
+}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:600px){.quiz-options{grid-template-columns:1fr}}
+.quiz-opt{
+  background:var(--surface);border:1.5px solid var(--border);border-radius:10px;
+  padding:14px 16px;cursor:pointer;text-align:left;color:var(--text);
+  font-size:14px;font-family:'DM Sans',sans-serif;font-weight:500;
+  transition:.2s;position:relative;
+}
+.quiz-opt:hover:not(:disabled){border-color:var(--accent);background:rgba(79,195,247,.05)}
+.quiz-opt.correct{border-color:var(--accent3);background:rgba(129,199,132,.1);color:var(--accent3)}
+.quiz-opt.wrong{border-color:var(--accent2);background:rgba(240,98,146,.1);color:var(--accent2)}
+.quiz-opt:disabled{cursor:default}
+.quiz-feedback{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:18px;margin-top:16px;
+  display:none;
+}
+.quiz-feedback.show{display:block}
+.feedback-correct{color:var(--accent3);font-weight:600;margin-bottom:8px}
+.feedback-wrong{color:var(--accent2);font-weight:600;margin-bottom:8px}
+.feedback-explain{color:rgba(232,234,246,.8);font-size:14px;line-height:1.6}
+.quiz-nav{display:flex;gap:12px;justify-content:flex-end;margin-top:20px}
+.btn{
+  padding:10px 22px;border-radius:10px;border:none;cursor:pointer;
+  font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;transition:.2s;
+}
+.btn-primary{background:var(--accent);color:#000}
+.btn-primary:hover{background:#81d4fa}
+.btn-outline{background:none;border:1.5px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.quiz-result{
+  text-align:center;padding:48px 24px;
+  background:var(--card);border:1px solid var(--border);border-radius:20px;
+}
+.result-score{
+  font-family:'Space Mono',monospace;font-size:64px;font-weight:700;
+  background:linear-gradient(135deg,var(--accent),#7c4dff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.result-label{color:var(--muted);font-size:16px;margin-bottom:32px}
+.result-breakdown{
+  display:flex;gap:24px;justify-content:center;margin-bottom:32px;flex-wrap:wrap;
+}
+.rb-item{text-align:center}
+.rb-num{font-family:'Space Mono',monospace;font-size:24px;font-weight:700}
+.rb-text{font-size:12px;color:var(--muted);margin-top:4px}
+.correct-color{color:var(--accent3)}
+.wrong-color{color:var(--accent2)}
+.skip-color{color:var(--accent4)}
 
-  /* ── CARD GRID ── */
-  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 20px 0; }
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    transition: border-color 0.2s;
-  }
-  .card:hover { border-color: var(--border2); }
-  .card-icon { font-size: 22px; margin-bottom: 10px; }
-  .card-title { font-weight: 600; font-size: 14px; color: var(--text); margin-bottom: 6px; }
-  .card-desc { font-size: 13px; color: var(--muted); line-height: 1.55; }
+/* FORMULA SHEET */
+.formula-table{width:100%;border-collapse:collapse;font-size:14px}
+.formula-table th{
+  text-align:left;padding:12px 16px;
+  background:var(--surface);color:var(--accent);
+  font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+  border-bottom:1px solid var(--border);
+}
+.formula-table td{padding:14px 16px;border-bottom:1px solid rgba(30,37,56,.7);vertical-align:top}
+.formula-table tr:last-child td{border-bottom:none}
+.formula-table tr:hover td{background:rgba(79,195,247,.03)}
 
-  /* ── BADGE ── */
-  .badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 100px;
-    font-size: 11px;
-    font-weight: 500;
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .badge-blue   { background: var(--blue-dim);   color: var(--blue);   }
-  .badge-amber  { background: var(--amber-dim);  color: var(--amber);  }
-  .badge-green  { background: var(--green-dim);  color: var(--green);  }
-  .badge-teal   { background: var(--teal-dim);   color: var(--teal);   }
-  .badge-purple { background: var(--purple-dim); color: var(--purple); }
-  .badge-coral  { background: var(--coral-dim);  color: var(--coral);  }
-  .badge-red    { background: var(--red-dim);    color: var(--red);    }
+/* ANIMATIONS */
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.fade-in{animation:fadeIn .4s ease both}
 
-  /* ── UML / FLOW ── */
-  .flow-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 18px;
-    text-align: center;
-    font-size: 13px;
-    font-weight: 500;
-  }
-  .flow-arrow {
-    text-align: center;
-    color: var(--dim);
-    font-size: 18px;
-    padding: 4px 0;
-  }
+/* scroll */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--muted)}
 
-  /* ── POINTER TABLE ── */
-  .pointer-visual {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 22px 24px;
-    margin: 18px 0;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-  }
-
-  /* ── DIFF TABLE ── */
-  .diff-table td:nth-child(2) { color: var(--blue);  }
-  .diff-table td:nth-child(3) { color: var(--amber); }
-
-  /* ── MODE PILL in table ── */
-  .mode { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--text); }
-
-  /* ── STEPS ── */
-  .steps { margin: 18px 0; }
-  .step {
-    display: flex; gap: 16px;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .step:last-child { border-bottom: none; }
-  .step-num {
-    width: 26px; height: 26px;
-    border-radius: 50%;
-    background: var(--surface3);
-    color: var(--muted);
-    font-size: 11px; font-weight: 600;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; margin-top: 2px;
-  }
-  .step-text { color: var(--muted); font-size: 14px; }
-  .step-text strong { color: var(--text); }
-
-  /* ── COMPARE CARDS ── */
-  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 18px 0; }
-  @media (max-width: 580px) { .compare { grid-template-columns: 1fr; } }
-  .compare-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 18px 20px;
-  }
-  .compare-card-title {
-    font-size: 13px; font-weight: 600;
-    margin-bottom: 10px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .compare-card ul { padding-left: 18px; }
-  .compare-card li { color: var(--muted); font-size: 13px; margin-bottom: 5px; }
-
-  /* ── SUMMARY STRIP ── */
-  .summary-strip {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px 24px;
-    margin: 28px 0;
-  }
-  .summary-strip h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--dim); margin-bottom: 12px; }
-  .strip-row { display: flex; gap: 12px; flex-wrap: wrap; }
-  .strip-item {
-    background: var(--surface3);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 14px;
-    font-size: 13px;
-  }
-  .strip-item code { background: none; padding: 0; font-size: 13px; }
-  .strip-item .arr { color: var(--dim); margin: 0 6px; }
-
-  hr.divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+/* Responsive */
+@media(max-width:700px){
+  nav{padding:0 12px}
+  .nav-tab{padding:7px 10px;font-size:12px}
+  .hero{padding:90px 16px 40px}
+  .panel-body{padding:20px 16px}
+  .topic-grid{grid-template-columns:1fr}
+  .flashcard-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 
-<!-- ══════════ HEADER ══════════ -->
-<header class="page-header">
-  <div class="chapter-label">Class 12 · Computer Science · Python</div>
-  <h1 class="page-title">File <em>Handling</em> in Python</h1>
-  <p class="page-subtitle">Complete revision notes — Text Files · Binary Files · CSV Files</p>
-  <div class="toc-pills">
-    <a href="#text-files"   class="toc-pill pill-text">📄 Text Files</a>
-    <a href="#binary-files" class="toc-pill pill-bin">🗂 Binary Files</a>
-    <a href="#csv-files"    class="toc-pill pill-csv">📊 CSV Files</a>
+<nav>
+  <div class="nav-brand">⚡ ELECTROSTATICS</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showSection('learn')">Learn</button>
+    <button class="nav-tab" onclick="showSection('flashcards')">Flashcards</button>
+    <button class="nav-tab" onclick="showSection('quiz')">JEE Quiz</button>
+    <button class="nav-tab" onclick="showSection('formulas')">Formulas</button>
   </div>
-</header>
+</nav>
 
-<!-- ══════════ CONTENT ══════════ -->
-<main class="content">
-
-<!-- ─────────────────────────────────────────── -->
-<!-- SECTION 1: TEXT FILES -->
-<!-- ─────────────────────────────────────────── -->
-<div id="text-files" class="section-divider sd-text">
-  <div class="section-icon">📄</div>
-  <div class="section-num">Section 01</div>
-  <h2 class="section-title">Text Files</h2>
-  <p class="section-desc">Human-readable files where data is stored as a sequence of characters, with each line ending in a newline character <code>\n</code>.</p>
-</div>
-
-<!-- 1.1 Key Characteristics -->
-<div class="subsection">
-  <h3 class="subsection-title"><span class="dot dot-blue"></span>Key Characteristics</h3>
-  <div class="card-grid">
-    <div class="card">
-      <div class="card-icon">👁</div>
-      <div class="card-title">Human Readable</div>
-      <div class="card-desc">Can be opened and edited in any plain text editor like Notepad or VS Code.</div>
-    </div>
-    <div class="card">
-      <div class="card-icon">🔁</div>
-      <div class="card-title">EOL Translation</div>
-      <div class="card-desc">Internal translation happens during read/write — the EOL character <code>\n</code> is handled automatically.</div>
-    </div>
-    <div class="card">
-      <div class="card-icon">🔓</div>
-      <div class="card-title">Less Secure</div>
-      <div class="card-desc">Generally considered less safe than binary files because they can be easily read and edited.</div>
+<!-- ===== LEARN ===== -->
+<section id="learn" class="active">
+  <div class="hero">
+    <h1>Master Electrostatics</h1>
+    <p>JEE-focused interactive notes with derivations, diagrams, and solved examples</p>
+    <div class="pill-row">
+      <span class="pill pill-blue">12 Topics</span>
+      <span class="pill pill-pink">PYQ Based Quiz</span>
+      <span class="pill pill-green">Full Derivations</span>
     </div>
   </div>
-</div>
 
-<!-- 1.2 Opening & Closing -->
-<div class="subsection">
-  <h3 class="subsection-title"><span class="dot dot-blue"></span>Opening & Closing Files</h3>
-  <p>The <code>open()</code> function creates a <strong>file object</strong> that links Python to a physical file on disk.</p>
-
-  <div class="pre-label">Syntax</div>
-  <pre><code><span class="kw">file_obj</span> = <span class="fn">open</span>(<span class="st">"filename.txt"</span>, <span class="st">"mode"</span>)
-<span class="kw">file_obj</span>.<span class="fn">close</span>()   <span class="cm"># Always close to free memory</span></code></pre>
-
-  <div class="callout callout-tip">
-    <div class="callout-title">💡 Best Practice — use <code>with</code></div>
-    <p>The <code>with</code> statement automatically closes the file when the block ends, even if an exception occurs. Always prefer it over manual <code>close()</code>.</p>
+  <div id="topic-list">
+    <div class="topic-grid fade-in">
+      <div class="topic-card" onclick="showTopic('charge')">
+        <div class="topic-num">01</div>
+        <div class="topic-title">Electric Charge</div>
+        <span class="topic-tag">Fundamentals</span>
+      </div>
+      <div class="topic-card" onclick="showTopic('coulomb')">
+        <div class="topic-num">02</div>
+        <div class="topic-title">Coulomb's Law</div>
+        <span class="topic-tag">Core Law</span>
+      </div>
+      <div class="topic-card" onclick="showTopic('superposition')">
+        <div class="topic-num">03</div>
+        <div class="topic-title">Superposition Principle</div>
+        <span class="topic-tag">Vector</span>
+      </div>
+      <div class="topic-card" onclick="showTopic('efield')">
+        <div class="topic-num">04</div>
+        <div class="topic-title">Electric Field</div>
+        <span class="topic-tag">Core Concept</span>
+      </div>
+      <div class="topic-card" onclick="showTopic('distributions')">
+        <div class="topic-num">05</div>
+        <div class="topic-title">Continuous Distributions</div>
+        <span class="topic-tag">Integration</span>
+      </div>
+      <div class="topic-card" onclick="showTopic('dipole')">
+        <div class="topic-num">06</div>
+        <div class="topic-title">Electric Dipole</div>
+        <span class="topic-tag">Important</span>
+      </div>
+      <div class="topic-card" onclick="showTopic('fieldlines')">
+        <div class="topic-num">07</div>
+        <div class="topic-title">Electric Field Lines</div>
+        <span class="topic-tag">Visual</span>
+      </div>
+      <div class="topic-card" onclick="showTopic('motion')">
+        <div class="topic-num">08</div>
+        <div class="topic-title">Motion in E-field</div>
+        <span class="topic-tag">Kinematics</span>
+      </div>
+      <div class="topic-card" onclick="showTopic('flux')">
+        <div class="topic-num">09</div>
+        <div class="topic-title">Electric Flux & Solid Angle</div>
+        <span class="topic-tag">Flux</span>
+      </div>
+      <div class="topic-card" onclick="showTopic('gauss')">
+        <div class="topic-num">10</div>
+        <div class="topic-title">Gauss's Law</div>
+        <span class="topic-tag">★ Very Important</span>
+      </div>
+      <div class="topic-card" onclick="showTopic('potential')">
+        <div class="topic-num">11</div>
+        <div class="topic-title">Electric Potential & Energy</div>
+        <span class="topic-tag">Energy</span>
+      </div>
+      <div class="topic-card" onclick="showTopic('conductors')">
+        <div class="topic-num">12</div>
+        <div class="topic-title">Conductors & Capacitors</div>
+        <span class="topic-tag">Applied</span>
+      </div>
+    </div>
   </div>
 
-  <div class="pre-label">Using the with clause</div>
-  <pre><code><span class="kw">with</span> <span class="fn">open</span>(<span class="st">"data.txt"</span>, <span class="st">"r"</span>) <span class="kw">as</span> f:
-    content = f.<span class="fn">read</span>()
-<span class="cm"># File is automatically closed here — no need for f.close()</span></code></pre>
-</div>
-
-<!-- 1.3 File Access Modes -->
-<div class="subsection">
-  <h3 class="subsection-title"><span class="dot dot-blue"></span>File Access Modes</h3>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Mode</th>
-          <th>Name</th>
-          <th>Pointer Position</th>
-          <th>If File Missing</th>
-          <th>Key Behaviour</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><span class="mode badge badge-blue">'r'</span></td>
-          <td>Read</td>
-          <td>Beginning</td>
-          <td><span class="badge badge-red">Raises IOError</span></td>
-          <td>Default mode. Read-only.</td>
-        </tr>
-        <tr>
-          <td><span class="mode badge badge-coral">'w'</span></td>
-          <td>Write</td>
-          <td>Beginning</td>
-          <td><span class="badge badge-green">Creates file</span></td>
-          <td><strong>Truncates</strong> (erases) all existing data immediately.</td>
-        </tr>
-        <tr>
-          <td><span class="mode badge badge-teal">'a'</span></td>
-          <td>Append</td>
-          <td>End of file</td>
-          <td><span class="badge badge-green">Creates file</span></td>
-          <td>New data added after existing content — never overwrites.</td>
-        </tr>
-        <tr>
-          <td><span class="mode badge badge-purple">'r+'</span></td>
-          <td>Read & Write</td>
-          <td>Beginning</td>
-          <td><span class="badge badge-red">Raises IOError</span></td>
-          <td>Both operations allowed; file must already exist.</td>
-        </tr>
-        <tr>
-          <td><span class="mode badge badge-coral">'w+'</span></td>
-          <td>Write & Read</td>
-          <td>Beginning</td>
-          <td><span class="badge badge-green">Creates file</span></td>
-          <td><strong>Truncates</strong> existing data; useful to overwrite then read back.</td>
-        </tr>
-        <tr>
-          <td><span class="mode badge badge-teal">'a+'</span></td>
-          <td>Append & Read</td>
-          <td>End of file</td>
-          <td><span class="badge badge-green">Creates file</span></td>
-          <td>Pointer at end for writing; use <code>seek(0)</code> to read from start.</td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- TOPIC CONTENT AREA -->
+  <div id="topic-content" style="display:none">
+    <div class="content-panel">
+      <div class="panel-header">
+        <button class="panel-back" onclick="backToTopics()">←</button>
+        <h2 id="panel-title"></h2>
+      </div>
+      <div class="panel-body" id="panel-body"></div>
+    </div>
   </div>
+</section>
 
-  <div class="callout callout-warning">
-    <div class="callout-title">⚠ Watch Out</div>
-    <p><code>'w'</code> and <code>'w+'</code> truncate the file the moment they open it — all existing data is lost instantly, even before you write anything new.</p>
+<!-- ===== FLASHCARDS ===== -->
+<section id="flashcards">
+  <h2 style="font-size:28px;font-weight:700;margin-bottom:8px">Flashcards</h2>
+  <p style="color:var(--muted);margin-bottom:32px">Click a card to reveal the answer</p>
+  <div class="flashcard-grid" id="flashcard-grid"></div>
+</section>
+
+<!-- ===== QUIZ ===== -->
+<section id="quiz">
+  <h2 style="font-size:28px;font-weight:700;margin-bottom:8px">JEE Pattern Quiz</h2>
+  <p style="color:var(--muted);margin-bottom:32px">Based on PYQ patterns — 4 marks correct, −1 wrong</p>
+  <div class="quiz-wrap" id="quiz-container"></div>
+</section>
+
+<!-- ===== FORMULAS ===== -->
+<section id="formulas">
+  <h2 style="font-size:28px;font-weight:700;margin-bottom:8px">Formula Sheet</h2>
+  <p style="color:var(--muted);margin-bottom:32px">All key formulae from the chapter</p>
+  <div class="content-panel">
+    <div class="panel-body">
+      <table class="formula-table" id="formula-table"></table>
+    </div>
   </div>
-</div>
+</section>
 
-<!-- 1.4 Reading Functions -->
-<div class="subsection">
-  <h3 class="subsection-title"><span class="dot dot-blue"></span>Reading Functions</h3>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>Function</th><th>Reads</th><th>Returns</th><th>Critical Nuance</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><code>read()</code></td>
-          <td>Entire file</td>
-          <td>String</td>
-          <td>Includes <strong>every</strong> character — spaces, tabs, <code>\n</code></td>
-        </tr>
-        <tr>
-          <td><code>read(n)</code></td>
-          <td><code>n</code> characters from current pointer</td>
-          <td>String</td>
-          <td><code>n</code> counts spaces and <code>\n</code> as characters too</td>
-        </tr>
-        <tr>
-          <td><code>readline()</code></td>
-          <td>One line</td>
-          <td>String</td>
-          <td>Includes the trailing <code>\n</code></td>
-        </tr>
-        <tr>
-          <td><code>readline(n)</code></td>
-          <td><code>n</code> characters from current line</td>
-          <td>String</td>
-          <td>Stops at line boundary even if <code>n</code> is larger</td>
-        </tr>
-        <tr>
-          <td><code>readlines()</code></td>
-          <td>All lines</td>
-          <td><strong>List of strings</strong></td>
-          <td>Each element retains its <code>\n</code> — strip before printing</td>
-        </tr>
-      </tbody>
-    </table>
+<script>
+// ============================================================
+// TOPIC CONTENT DATA
+// ============================================================
+const topics = {
+
+charge: {
+  title: "Electric Charge",
+  html: `
+  <div class="inner-tabs">
+    <button class="inner-tab active" onclick="innerTab(this,'ct-theory')">Theory</button>
+    <button class="inner-tab" onclick="innerTab(this,'ct-methods')">Charging Methods</button>
+    <button class="inner-tab" onclick="innerTab(this,'ct-electroscope')">Electroscope</button>
   </div>
-</div>
-
-<!-- 1.5 Writing Functions -->
-<div class="subsection">
-  <h3 class="subsection-title"><span class="dot dot-blue"></span>Writing Functions</h3>
-  <div class="compare">
-    <div class="compare-card">
-      <div class="compare-card-title"><span class="badge badge-blue">write(string)</span></div>
+  <div id="ct-theory">
+    <div class="concept">
+      <div class="concept-label">FUNDAMENTALS</div>
+      <h3>What is Electric Charge?</h3>
+      <p>Electric charge is a fundamental property of matter that gives rise to electric force. It comes in two types: positive (+) and negative (−).</p>
       <ul>
-        <li>Writes a <strong>single string</strong> to the file</li>
-        <li>Does <strong>not</strong> add <code>\n</code> automatically</li>
-        <li>You must include <code>\n</code> manually if needed</li>
+        <li>Charge on one electron: <strong>e = −1.6 × 10⁻¹⁹ C</strong></li>
+        <li>This is the smallest charge that can exist independently in nature (charge is quantised)</li>
+        <li>SI unit: <strong>Coulomb (C)</strong></li>
       </ul>
     </div>
-    <div class="compare-card">
-      <div class="compare-card-title"><span class="badge badge-teal">writelines(list)</span></div>
+
+    <div class="formula-box">
+      <div class="formula-title">QUANTISATION OF CHARGE</div>
+      $$q = \\pm ne \\quad (n = 0, 1, 2, \\ldots)$$
+      <p style="color:var(--muted);font-size:13px;margin-top:8px">Any charge is always an integer multiple of elementary charge e.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-label">CHARGE vs MASS</div>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;margin-top:8px">
+        <tr style="border-bottom:1px solid var(--border)">
+          <th style="padding:10px;text-align:left;color:var(--accent)">Charge</th>
+          <th style="padding:10px;text-align:left;color:var(--accent2)">Mass</th>
+        </tr>
+        <tr>
+          <td style="padding:10px;vertical-align:top">Cannot exist without mass</td>
+          <td style="padding:10px;vertical-align:top">Can exist without charge (e.g. neutron)</td>
+        </tr>
+        <tr>
+          <td style="padding:10px;vertical-align:top">Independent of speed</td>
+          <td style="padding:10px;vertical-align:top">Speed-dependent: \\(m = \\dfrac{m_0}{\\sqrt{1-v^2/c^2}}\\)</td>
+        </tr>
+        <tr>
+          <td style="padding:10px;vertical-align:top">Can be positive, negative or zero</td>
+          <td style="padding:10px;vertical-align:top">Always positive</td>
+        </tr>
+        <tr>
+          <td style="padding:10px;vertical-align:top">Conserved in an isolated system</td>
+          <td style="padding:10px;vertical-align:top">Not strictly conserved (E=mc²)</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="key-point">
+      <div class="key-point-icon">💡</div>
+      <p>Like charges repel, unlike charges attract. A proton has charge +e and mass ≈ 1836 × mₑ. Charge is a scalar quantity.</p>
+    </div>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 500 160" xmlns="http://www.w3.org/2000/svg" style="max-width:500px;width:100%">
+        <defs>
+          <radialGradient id="pg" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ef9a9a"/>
+            <stop offset="100%" stop-color="#e53935"/>
+          </radialGradient>
+          <radialGradient id="ng" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#90caf9"/>
+            <stop offset="100%" stop-color="#1565c0"/>
+          </radialGradient>
+        </defs>
+        <!-- Proton -->
+        <circle cx="120" cy="80" r="36" fill="url(#pg)" opacity=".9"/>
+        <text x="120" y="75" text-anchor="middle" fill="white" font-size="22" font-weight="bold">+</text>
+        <text x="120" y="95" text-anchor="middle" fill="white" font-size="11">proton</text>
+        <!-- electron -->
+        <circle cx="380" cy="80" r="36" fill="url(#ng)" opacity=".9"/>
+        <text x="380" y="75" text-anchor="middle" fill="white" font-size="22" font-weight="bold">−</text>
+        <text x="380" y="95" text-anchor="middle" fill="white" font-size="11">electron</text>
+        <!-- repulsion arrows same charges -->
+        <circle cx="250" cy="40" r="20" fill="#ef9a9a" opacity=".8"/>
+        <text x="250" y="46" text-anchor="middle" fill="white" font-size="16">+</text>
+        <circle cx="250" cy="120" r="20" fill="#ef9a9a" opacity=".8"/>
+        <text x="250" y="126" text-anchor="middle" fill="white" font-size="16">+</text>
+        <line x1="250" y1="18" x2="250" y2="5" stroke="#ffb74d" stroke-width="2" marker-end="url(#arr)"/>
+        <line x1="250" y1="142" x2="250" y2="155" stroke="#ffb74d" stroke-width="2"/>
+        <defs>
+          <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#ffb74d"/>
+          </marker>
+        </defs>
+        <text x="250" y="82" text-anchor="middle" fill="#ffb74d" font-size="11">REPEL</text>
+      </svg>
+      <div class="diagram-caption">Like charges repel; proton (+e) and electron (−e) attract</div>
+    </div>
+  </div>
+
+  <div id="ct-methods" style="display:none">
+    <div class="concept">
+      <div class="concept-label">METHOD 1</div>
+      <h3>Charging by Friction (Rubbing)</h3>
+      <p>When two bodies are rubbed together, electrons are transferred from one body to the other. The body that loses electrons becomes positively charged and the one that gains electrons becomes negatively charged.</p>
+    </div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 500 180" xmlns="http://www.w3.org/2000/svg" style="max-width:500px;width:100%">
+        <rect x="30" y="60" width="160" height="60" rx="10" fill="#1e2538" stroke="#4fc3f7" stroke-width="1.5"/>
+        <text x="110" y="90" text-anchor="middle" fill="#90caf9" font-size="13">Body A (neutral)</text>
+        <text x="40" y="112" fill="#4fc3f7" font-size="14">e e e e</text>
+        <rect x="310" y="60" width="160" height="60" rx="10" fill="#1e2538" stroke="#f06292" stroke-width="1.5"/>
+        <text x="390" y="90" text-anchor="middle" fill="#f06292" font-size="13">Body B</text>
+        <!-- arrow -->
+        <path d="M200,90 Q250,60 300,90" fill="none" stroke="#ffb74d" stroke-width="2" stroke-dasharray="5,3"/>
+        <polygon points="296,85 304,90 296,95" fill="#ffb74d"/>
+        <text x="250" y="55" text-anchor="middle" fill="#ffb74d" font-size="11">electrons transfer</text>
+        <text x="110" y="145" text-anchor="middle" fill="#f06292" font-size="12">becomes +ve</text>
+        <text x="390" y="145" text-anchor="middle" fill="#90caf9" font-size="12">becomes −ve</text>
+      </svg>
+      <div class="diagram-caption">Charging by friction — electrons move from lower work-function to higher</div>
+    </div>
+
+    <div class="concept">
+      <div class="concept-label">METHOD 2</div>
+      <h3>Charging by Conduction</h3>
+      <p>When a charged body is brought in contact with an uncharged body, charge is transferred through direct contact. Both bodies end up with the same sign of charge.</p>
+    </div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 500 180" xmlns="http://www.w3.org/2000/svg" style="max-width:500px;width:100%">
+        <!-- charged body -->
+        <circle cx="150" cy="90" r="50" fill="none" stroke="#f06292" stroke-width="2"/>
+        <text x="150" y="80" text-anchor="middle" fill="#f06292" font-size="22" font-weight="bold">+</text>
+        <text x="150" y="100" text-anchor="middle" fill="#f06292" font-size="11">Charged</text>
+        <!-- uncharged -->
+        <circle cx="350" cy="90" r="50" fill="none" stroke="#555" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="350" y="95" text-anchor="middle" fill="#999" font-size="11">Uncharged</text>
+        <!-- contact -->
+        <line x1="200" y1="90" x2="300" y2="90" stroke="#4fc3f7" stroke-width="2"/>
+        <text x="250" y="82" text-anchor="middle" fill="#4fc3f7" font-size="11">contact</text>
+        <text x="150" y="160" text-anchor="middle" fill="#f06292" font-size="11">+</text>
+        <text x="350" y="160" text-anchor="middle" fill="#f06292" font-size="11">+ (shared)</text>
+      </svg>
+      <div class="diagram-caption">Charging by conduction — charge distributes between bodies on contact</div>
+    </div>
+
+    <div class="concept">
+      <div class="concept-label">METHOD 3</div>
+      <h3>Charging by Induction</h3>
+      <p>When a charged body is brought close (but not touching) to a neutral conductor, charge separation occurs. The nearer face develops opposite charge (induced charge) and the farther face develops similar charge. No charge is transferred.</p>
+    </div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 540 200" xmlns="http://www.w3.org/2000/svg" style="max-width:540px;width:100%">
+        <!-- external charged rod -->
+        <rect x="20" y="70" width="30" height="100" rx="5" fill="#f06292" opacity=".8"/>
+        <text x="35" y="90" text-anchor="middle" fill="white" font-size="11">+</text>
+        <text x="35" y="106" text-anchor="middle" fill="white" font-size="11">+</text>
+        <text x="35" y="122" text-anchor="middle" fill="white" font-size="11">+</text>
+        <text x="35" y="138" text-anchor="middle" fill="white" font-size="11">+</text>
+        <text x="35" y="154" text-anchor="middle" fill="white" font-size="11">+</text>
+        <!-- conductor -->
+        <rect x="120" y="50" width="300" height="130" rx="12" fill="#1e2538" stroke="#4fc3f7" stroke-width="1.5"/>
+        <!-- induced charges -->
+        <text x="140" y="80" fill="#4fc3f7" font-size="14">−</text>
+        <text x="140" y="100" fill="#4fc3f7" font-size="14">−</text>
+        <text x="140" y="120" fill="#4fc3f7" font-size="14">−</text>
+        <text x="140" y="140" fill="#4fc3f7" font-size="14">−</text>
+        <text x="140" y="160" fill="#4fc3f7" font-size="14">−</text>
+        <!-- opposite side -->
+        <text x="390" y="80" fill="#f06292" font-size="14">+</text>
+        <text x="390" y="100" fill="#f06292" font-size="14">+</text>
+        <text x="390" y="120" fill="#f06292" font-size="14">+</text>
+        <text x="390" y="140" fill="#f06292" font-size="14">+</text>
+        <text x="390" y="160" fill="#f06292" font-size="14">+</text>
+        <text x="270" y="125" text-anchor="middle" fill="#999" font-size="12">Conductor</text>
+        <!-- labels -->
+        <text x="140" y="200" text-anchor="middle" fill="#4fc3f7" font-size="11">Induced −</text>
+        <text x="395" y="200" text-anchor="middle" fill="#f06292" font-size="11">Induced +</text>
+        <text x="35" y="195" text-anchor="middle" fill="#f06292" font-size="11">+Q rod</text>
+      </svg>
+      <div class="diagram-caption">Induction: +ve rod attracts −ve charges to near face; far face becomes +ve. No charge is lost from rod.</div>
+    </div>
+    <div class="key-point">
+      <div class="key-point-icon">💡</div>
+      <p>If the conductor is grounded while the inducing charge is nearby, and then the ground is removed, the conductor retains opposite charge to the inducing body. This is how electrostatic induction charging works.</p>
+    </div>
+  </div>
+
+  <div id="ct-electroscope" style="display:none">
+    <div class="concept">
+      <div class="concept-label">INSTRUMENT</div>
+      <h3>Gold Leaf Electroscope</h3>
+      <p>A device used to detect and identify charge. It has a metal cap connected to a conducting rod with two thin gold leaves hanging at the bottom inside a glass jar.</p>
+    </div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 300 280" xmlns="http://www.w3.org/2000/svg" style="max-width:300px;width:100%">
+        <!-- jar -->
+        <rect x="80" y="100" width="140" height="160" rx="8" fill="none" stroke="#4fc3f7" stroke-width="1.5" opacity=".5"/>
+        <!-- rod -->
+        <line x1="150" y1="30" x2="150" y2="180" stroke="#90caf9" stroke-width="3"/>
+        <!-- cap -->
+        <ellipse cx="150" cy="30" rx="40" ry="12" fill="#4fc3f7" opacity=".8"/>
+        <text x="150" y="35" text-anchor="middle" fill="#000" font-size="10" font-weight="bold">cap</text>
+        <!-- charges on cap -->
+        <text x="115" y="25" fill="#f06292" font-size="11">+</text>
+        <text x="130" y="20" fill="#f06292" font-size="11">+</text>
+        <text x="145" y="18" fill="#f06292" font-size="11">+</text>
+        <text x="160" y="20" fill="#f06292" font-size="11">+</text>
+        <text x="175" y="25" fill="#f06292" font-size="11">+</text>
+        <!-- leaves diverged -->
+        <line x1="150" y1="180" x2="120" y2="240" stroke="#ffd54f" stroke-width="3"/>
+        <line x1="150" y1="180" x2="180" y2="240" stroke="#ffd54f" stroke-width="3"/>
+        <text x="150" y="270" text-anchor="middle" fill="#ffd54f" font-size="11">leaves diverge</text>
+        <!-- angle arc -->
+        <path d="M 133 200 A 20 20 0 0 1 167 200" fill="none" stroke="#ffb74d" stroke-width="1" stroke-dasharray="3,2"/>
+      </svg>
+      <div class="diagram-caption">Gold Leaf Electroscope — leaves diverge due to same charge repulsion</div>
+    </div>
+    <div class="concept">
+      <h3>Uses</h3>
       <ul>
-        <li>Writes a <strong>list of strings</strong></li>
-        <li>Does <strong>not</strong> add newlines between elements</li>
-        <li>Faster for bulk writes</li>
+        <li><strong>Test conductor/insulator:</strong> touch material to cap — rapid collapse = good conductor; slow collapse = poor conductor; no collapse = insulator</li>
+        <li><strong>Identify charge sign:</strong> bring unknown charge near charged electroscope — if leaves diverge more, unknown charge is same as electroscope; if leaves converge, opposite charge</li>
+        <li><strong>Rough measurement</strong> of charge magnitude (greater divergence = more charge)</li>
       </ul>
     </div>
   </div>
+  `
+},
 
-  <div class="pre-label">Example — write vs writelines</div>
-  <pre><code><span class="kw">with</span> <span class="fn">open</span>(<span class="st">"out.txt"</span>, <span class="st">"w"</span>) <span class="kw">as</span> f:
-    f.<span class="fn">write</span>(<span class="st">"Hello\n"</span>)              <span class="cm"># Must add \n manually</span>
-    f.<span class="fn">writelines</span>([<span class="st">"Line1\n"</span>, <span class="st">"Line2\n"</span>])  <span class="cm"># \n must be in the list items</span></code></pre>
-</div>
+coulomb: {
+  title: "Coulomb's Law",
+  html: `
+  <div class="inner-tabs">
+    <button class="inner-tab active" onclick="innerTab(this,'cl-law')">The Law</button>
+    <button class="inner-tab" onclick="innerTab(this,'cl-vector')">Vector Form</button>
+    <button class="inner-tab" onclick="innerTab(this,'cl-medium')">In a Medium</button>
+    <button class="inner-tab" onclick="innerTab(this,'cl-pyq')">Solved PYQ</button>
+  </div>
 
-<!-- 1.6 seek & tell -->
-<div class="subsection">
-  <h3 class="subsection-title"><span class="dot dot-blue"></span>File Pointer Navigation — <code>seek()</code> & <code>tell()</code></h3>
-  <p>The <strong>file pointer</strong> marks where the next read or write will happen. You can move it manually.</p>
-
-  <div class="pointer-visual">
-    <div style="color:var(--muted);margin-bottom:12px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase">File contents</div>
-    <div style="display:flex;gap:0;font-size:13px;border:1px solid var(--border);border-radius:8px;overflow:hidden">
-      <div style="padding:10px 14px;border-right:1px solid var(--border);background:var(--surface2)">H</div>
-      <div style="padding:10px 14px;border-right:1px solid var(--border);background:var(--surface2)">e</div>
-      <div style="padding:10px 14px;border-right:1px solid var(--border);background:var(--surface2)">l</div>
-      <div style="padding:10px 14px;border-right:1px solid var(--border);background:var(--surface3);color:var(--blue)">l</div>
-      <div style="padding:10px 14px;border-right:1px solid var(--border);background:var(--surface2)">o</div>
-      <div style="padding:10px 14px;border-right:1px solid var(--border);background:var(--surface2)">\n</div>
-      <div style="padding:10px 14px;border-right:1px solid var(--border);background:var(--surface2)">W</div>
-      <div style="padding:10px 14px;background:var(--surface2)">…</div>
+  <div id="cl-law">
+    <div class="concept">
+      <div class="concept-label">STATEMENT</div>
+      <h3>Coulomb's Law</h3>
+      <p>The electrostatic force between two stationary point charges is directly proportional to the product of their charges and inversely proportional to the square of the distance between them, and acts along the line joining them.</p>
     </div>
-    <div style="display:flex;gap:0;margin-top:4px">
-      <div style="width:14px;text-align:center;margin-left:0;color:var(--dim);font-size:10px">0</div>
-      <div style="width:42px;text-align:center;color:var(--dim);font-size:10px">1</div>
-      <div style="width:42px;text-align:center;color:var(--dim);font-size:10px">2</div>
-      <div style="width:42px;text-align:center;color:var(--blue);font-size:10px;font-weight:600">3 ← tell()</div>
+    <div class="formula-box">
+      <div class="formula-title">COULOMB'S LAW</div>
+      $$F = \\frac{kQ_1 Q_2}{r^2} = \\frac{Q_1 Q_2}{4\\pi\\epsilon_0 r^2}$$
+      <p style="color:var(--muted);font-size:13px;margin-top:8px">
+        \\(k = 9\\times10^9\\) N·m²/C², &nbsp; \\(\\epsilon_0 = 8.85\\times10^{-12}\\) C²/(N·m²)
+      </p>
+    </div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 500 120" xmlns="http://www.w3.org/2000/svg" style="max-width:500px;width:100%">
+        <defs>
+          <marker id="a1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#f06292"/></marker>
+          <marker id="a2" markerWidth="8" markerHeight="8" refX="2" refY="3" orient="auto"><path d="M8,0 L8,6 L0,3z" fill="#4fc3f7"/></marker>
+        </defs>
+        <!-- charges -->
+        <circle cx="110" cy="60" r="30" fill="none" stroke="#f06292" stroke-width="2"/>
+        <text x="110" y="55" text-anchor="middle" fill="#f06292" font-size="16">+Q₁</text>
+        <circle cx="390" cy="60" r="30" fill="none" stroke="#4fc3f7" stroke-width="2"/>
+        <text x="390" y="55" text-anchor="middle" fill="#4fc3f7" font-size="13">−Q₂</text>
+        <!-- distance -->
+        <line x1="140" y1="100" x2="360" y2="100" stroke="#999" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="250" y="115" text-anchor="middle" fill="#999" font-size="12">r</text>
+        <!-- force arrows -->
+        <line x1="60" y1="60" x2="15" y2="60" stroke="#f06292" stroke-width="2.5" marker-end="url(#a1)"/>
+        <text x="37" y="50" fill="#f06292" font-size="11">F₁₂</text>
+        <line x1="440" y1="60" x2="480" y2="60" stroke="#4fc3f7" stroke-width="2.5" marker-end="url(#a2)" marker-start="url(#a2)"/>
+        <text x="456" y="50" fill="#4fc3f7" font-size="11">F₂₁</text>
+        <!-- Newton's 3rd law note -->
+        <text x="250" y="30" text-anchor="middle" fill="#ffb74d" font-size="11">|F₁₂| = |F₂₁| — Newton's 3rd Law</text>
+      </svg>
+      <div class="diagram-caption">Unlike charges attract — forces are equal, opposite, along the line joining charges</div>
+    </div>
+    <div class="key-point">
+      <div class="key-point-icon">⚠️</div>
+      <p>Coulomb's law applies only to <strong>point charges</strong> at rest. It's valid for distances down to ~10⁻¹⁵ m (nuclear scale).</p>
     </div>
   </div>
 
-  <div class="table-wrap" style="margin-top:16px">
-    <table>
-      <thead>
-        <tr><th>Function</th><th>Purpose</th><th>Returns</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><code>tell()</code></td>
-          <td>Returns current pointer position in bytes from start</td>
-          <td>Integer (byte offset)</td>
-        </tr>
-        <tr>
-          <td><code>seek(offset, 0)</code></td>
-          <td>Move pointer <code>offset</code> bytes from <strong>beginning</strong></td>
-          <td>—</td>
-        </tr>
-        <tr>
-          <td><code>seek(offset, 1)</code></td>
-          <td>Move pointer <code>offset</code> bytes from <strong>current position</strong></td>
-          <td>—</td>
-        </tr>
-        <tr>
-          <td><code>seek(offset, 2)</code></td>
-          <td>Move pointer <code>offset</code> bytes from <strong>end of file</strong></td>
-          <td>—</td>
-        </tr>
-      </tbody>
+  <div id="cl-vector" style="display:none">
+    <div class="concept">
+      <div class="concept-label">VECTOR FORM</div>
+      <h3>Force on q₁ due to q₂</h3>
+    </div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 500 180" xmlns="http://www.w3.org/2000/svg" style="max-width:500px;width:100%">
+        <defs>
+          <marker id="va" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#4fc3f7"/></marker>
+          <marker id="vb" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#f06292"/></marker>
+          <marker id="vc" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#81c784"/></marker>
+        </defs>
+        <!-- origin -->
+        <circle cx="60" cy="150" r="4" fill="#999"/>
+        <text x="55" y="170" fill="#999" font-size="11">O</text>
+        <!-- q1 -->
+        <circle cx="200" cy="80" r="16" fill="none" stroke="#f06292" stroke-width="2"/>
+        <text x="200" y="85" text-anchor="middle" fill="#f06292" font-size="13">q₁</text>
+        <!-- q2 -->
+        <circle cx="400" cy="80" r="16" fill="none" stroke="#4fc3f7" stroke-width="2"/>
+        <text x="400" y="85" text-anchor="middle" fill="#4fc3f7" font-size="13">q₂</text>
+        <!-- r1 vector -->
+        <line x1="60" y1="150" x2="184" y2="88" stroke="#f06292" stroke-width="2" marker-end="url(#vb)"/>
+        <text x="100" y="130" fill="#f06292" font-size="12">r⃗₁</text>
+        <!-- r2 vector -->
+        <line x1="60" y1="150" x2="384" y2="88" stroke="#4fc3f7" stroke-width="2" marker-end="url(#va)"/>
+        <text x="280" y="140" fill="#4fc3f7" font-size="12">r⃗₂</text>
+        <!-- r21 vector (from 2 to 1 direction) -->
+        <line x1="216" y1="80" x2="382" y2="80" stroke="#81c784" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="300" y="72" text-anchor="middle" fill="#81c784" font-size="12">r⃗ = r⃗₂ − r⃗₁</text>
+      </svg>
+      <div class="diagram-caption">Position vectors of charges from origin, and displacement vector r</div>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">VECTOR COULOMB'S LAW (Force on q₁ due to q₂)</div>
+      $$\\vec{F}_{12} = \\frac{kq_1 q_2}{|\\vec{r}_2 - \\vec{r}_1|^3}(\\vec{r}_2 - \\vec{r}_1)$$
+      <p style="color:var(--muted);font-size:12px;margin-top:8px">The direction is automatically handled by (r⃗₂ − r⃗₁). Substitute q₁ and q₂ with their signs.</p>
+    </div>
+    <div class="key-point">
+      <div class="key-point-icon">💡</div>
+      <p>If q₁q₂ > 0 (like charges): force is repulsive (along r⃗). If q₁q₂ &lt; 0 (unlike): force is attractive (opposite to r⃗). Always substitute signs!</p>
+    </div>
+  </div>
+
+  <div id="cl-medium" style="display:none">
+    <div class="concept">
+      <div class="concept-label">MEDIUM EFFECTS</div>
+      <h3>Coulomb's Law in a Medium</h3>
+      <p>When charges are placed in a dielectric medium with relative permittivity ε_r, the force between them is reduced:</p>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">IN A DIELECTRIC MEDIUM</div>
+      $$F_{medium} = \\frac{kQ_1 Q_2}{\\epsilon_r r^2} = \\frac{F_{vacuum}}{\\epsilon_r}$$
+      <br>
+      $$\\epsilon = \\epsilon_0 \\epsilon_r, \\quad k = \\frac{1}{4\\pi\\epsilon_0}$$
+      <p style="color:var(--muted);font-size:12px;margin-top:8px">ε_r = 1 (vacuum), ε_r = 81 (water), ε_r = 2−3 (most oils)</p>
+    </div>
+    <div class="concept">
+      <h3>Permittivity</h3>
+      <p>Permittivity is the ability of a material to permit electric field lines to pass through it. Higher permittivity → more screening → weaker force between charges.</p>
+    </div>
+    <div class="warn-box">
+      <div class="key-point-icon">🔑</div>
+      <p><strong>JEE Trick:</strong> If a slab of dielectric constant ε_r and thickness t is placed between charges at distance d apart, treat the gap as effectively d − t + t/√ε_r.</p>
+    </div>
+  </div>
+
+  <div id="cl-pyq" style="display:none">
+    <div class="concept">
+      <div class="concept-label">JEE PYQ TYPE — CLASSIC</div>
+      <h3>Charged balls in equilibrium in liquid</h3>
+      <p><em>Two identical balls each with density ρ are suspended by insulating strings. In air, each string makes angle θ with vertical. Both are immersed in liquid of density σ. The angle θ does not change. Find the dielectric constant K of liquid.</em></p>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">SOLUTION APPROACH</div>
+      <p style="color:var(--text);font-size:14px;line-height:1.7">
+        In air: tan θ = F_coulomb / (mg)<br><br>
+        In liquid: Effective gravity = g_eff = g(1 − σ/ρ) (due to buoyancy)<br>
+        Coulomb force in liquid = F/K<br><br>
+        For same angle: tan θ is same, so the ratio F_elec/F_gravity must be constant:<br>
+      </p>
+      $$\\frac{F/K}{mg(1-\\sigma/\\rho)} = \\frac{F}{mg}$$
+      $$K = \\frac{\\rho}{\\rho - \\sigma}$$
+    </div>
+
+    <div class="concept">
+      <div class="concept-label">JEE PYQ TYPE — LEAKING CHARGES</div>
+      <h3>Velocity of spheres with leaking charge</h3>
+      <p><em>Two identical charged spheres suspended by strings of length l, separation x (x ≪ l). Charges leak at constant rate. Find how velocity v varies with x.</em></p>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">SOLUTION</div>
+      <p style="color:var(--text);font-size:14px;line-height:1.7">
+        At equilibrium: tan θ ≈ x/(2l) = F_e / mg<br>
+        So: kq²/x² = mgx/(2l) ⟹ q² ∝ x³<br><br>
+        Differentiate: 2q(dq/dt) = 3x²(dx/dt) = 3x²v<br>
+        Since dq/dt = const (−λ), and q ∝ x^(3/2):<br>
+      </p>
+      $$v = \\frac{dx}{dt} \\propto x^{1/2} \\implies v \\propto \\sqrt{x}$$
+    </div>
+  </div>
+  `
+},
+
+superposition: {
+  title: "Superposition Principle",
+  html: `
+  <div class="concept">
+    <div class="concept-label">PRINCIPLE</div>
+    <h3>Superposition Principle</h3>
+    <p>The net electrostatic force on a given charge is the <strong>vector sum</strong> of forces exerted on it by all other charges in its surroundings. Each pair of charges interacts independently.</p>
+  </div>
+  <div class="formula-box">
+    <div class="formula-title">SUPERPOSITION</div>
+    $$\\vec{F}_{net} = \\vec{F}_{12} + \\vec{F}_{13} + \\vec{F}_{14} + \\ldots = \\sum_{j \\neq 1} \\vec{F}_{1j}$$
+  </div>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg" style="max-width:500px;width:100%">
+      <defs>
+        <marker id="sa" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#4fc3f7"/></marker>
+        <marker id="sb" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#f06292"/></marker>
+        <marker id="sc" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#81c784"/></marker>
+        <marker id="sd" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#ffb74d"/></marker>
+        <marker id="se" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#ce93d8"/></marker>
+      </defs>
+      <!-- q1 at center -->
+      <circle cx="250" cy="150" r="18" fill="none" stroke="#ffb74d" stroke-width="2"/>
+      <text x="250" y="155" text-anchor="middle" fill="#ffb74d" font-size="12">q₁</text>
+      <!-- q2 top -->
+      <circle cx="250" cy="50" r="14" fill="none" stroke="#4fc3f7" stroke-width="2"/>
+      <text x="250" y="55" text-anchor="middle" fill="#4fc3f7" font-size="11">q₂</text>
+      <line x1="250" y1="132" x2="250" y2="72" stroke="#4fc3f7" stroke-width="2" marker-end="url(#sa)"/>
+      <text x="262" y="105" fill="#4fc3f7" font-size="10">F₁₂</text>
+      <!-- q3 left -->
+      <circle cx="120" cy="150" r="14" fill="none" stroke="#f06292" stroke-width="2"/>
+      <text x="120" y="155" text-anchor="middle" fill="#f06292" font-size="11">q₃</text>
+      <line x1="232" y1="150" x2="142" y2="150" stroke="#f06292" stroke-width="2" marker-end="url(#sb)"/>
+      <text x="190" y="142" fill="#f06292" font-size="10">F₁₃</text>
+      <!-- q4 bottom-right -->
+      <circle cx="370" cy="240" r="14" fill="none" stroke="#81c784" stroke-width="2"/>
+      <text x="370" y="245" text-anchor="middle" fill="#81c784" font-size="11">q₄</text>
+      <line x1="262" y1="162" x2="356" y2="228" stroke="#81c784" stroke-width="2" marker-end="url(#sc)"/>
+      <text x="322" y="200" fill="#81c784" font-size="10">F₁₄</text>
+      <!-- q5 right -->
+      <circle cx="400" cy="90" r="14" fill="none" stroke="#ce93d8" stroke-width="2"/>
+      <text x="400" y="95" text-anchor="middle" fill="#ce93d8" font-size="11">q₅</text>
+      <line x1="267" y1="140" x2="385" y2="98" stroke="#ce93d8" stroke-width="2" marker-end="url(#se)"/>
+      <text x="336" y="112" fill="#ce93d8" font-size="10">F₁₅</text>
+    </svg>
+    <div class="diagram-caption">Net force on q₁ = vector sum of forces from q₂, q₃, q₄, q₅</div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-label">EQUILIBRIUM</div>
+    <h3>Electrostatic Equilibrium</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:14px;margin-top:8px">
+      <tr style="border-bottom:1px solid var(--border)">
+        <th style="padding:10px;text-align:left;color:var(--accent)">Type</th>
+        <th style="padding:10px;text-align:left;color:var(--accent)">Description</th>
+      </tr>
+      <tr>
+        <td style="padding:10px;color:var(--accent3)">Stable</td>
+        <td style="padding:10px">Displaced → returns to equilibrium</td>
+      </tr>
+      <tr>
+        <td style="padding:10px;color:var(--accent2)">Unstable</td>
+        <td style="padding:10px">Displaced → moves further away</td>
+      </tr>
+      <tr>
+        <td style="padding:10px;color:var(--accent4)">Neutral</td>
+        <td style="padding:10px">Displaced → remains at new position</td>
+      </tr>
     </table>
   </div>
 
-  <div class="callout callout-note">
-    <div class="callout-title">📌 Key Point</div>
-    <p>In <code>'a+'</code> mode the pointer starts at the <strong>end</strong> of the file. Call <code>seek(0)</code> first before trying to read from the beginning.</p>
+  <div class="formula-box">
+    <div class="formula-title">PYQ CLASSIC: EQUILIBRIUM OF THREE CHARGES (+Q, +4Q, ?)</div>
+    <p style="color:var(--text);font-size:14px;line-height:1.7">
+      Place +Q at x=0, +4Q at x=L. For a third charge q at position x to be in equilibrium:<br><br>
+      Force on q from +Q: F₁ = kQq/x²<br>
+      Force on q from +4Q: F₂ = k(4Q)q/(L−x)²<br><br>
+      Setting F₁ = F₂: 1/x² = 4/(L−x)² ⟹ (L−x) = 2x ⟹ <strong>x = L/3</strong><br><br>
+      For the overall system to be in equilibrium (including +Q and +4Q), q must be negative: <strong>q = −4Q/9</strong>
+    </p>
   </div>
-</div>
+  `
+},
 
-<!-- ─────────────────────────────────────────── -->
-<!-- SECTION 2: BINARY FILES -->
-<!-- ─────────────────────────────────────────── -->
-<div id="binary-files" class="section-divider sd-bin" style="margin-top:72px">
-  <div class="section-icon">🗂</div>
-  <div class="section-num">Section 02</div>
-  <h2 class="section-title">Binary Files</h2>
-  <p class="section-desc">Stores data in the same format as memory — no character translation. Used to save Python objects like lists and dictionaries using the <code>pickle</code> module.</p>
-</div>
+efield: {
+  title: "Electric Field",
+  html: `
+  <div class="inner-tabs">
+    <button class="inner-tab active" onclick="innerTab(this,'ef-def')">Definition</button>
+    <button class="inner-tab" onclick="innerTab(this,'ef-point')">Point Charge</button>
+    <button class="inner-tab" onclick="innerTab(this,'ef-null')">Null Point</button>
+  </div>
 
-<!-- 2.1 vs Text -->
-<div class="subsection">
-  <h3 class="subsection-title"><span class="dot dot-amber"></span>Binary vs Text — At a Glance</h3>
-  <div class="table-wrap">
-    <table class="diff-table">
-      <thead><tr><th>Property</th><th>Text File</th><th>Binary File</th></tr></thead>
-      <tbody>
-        <tr><td>Storage format</td><td>Characters (ASCII/UTF-8)</td><td>Raw bytes (same as memory)</td></tr>
-        <tr><td>EOL translation</td><td>Yes — <code>\n</code> translated</td><td>No translation at all</td></tr>
-        <tr><td>Human readable</td><td>Yes</td><td>No</td></tr>
-        <tr><td>Python objects</td><td>Need manual conversion</td><td>Direct via <code>pickle</code></td></tr>
-        <tr><td>File modes</td><td><code>r w a r+ w+ a+</code></td><td><code>rb wb ab rb+ wb+ ab+</code></td></tr>
-      </tbody>
+  <div id="ef-def">
+    <div class="concept">
+      <div class="concept-label">DEFINITION</div>
+      <h3>Electric Field</h3>
+      <p>The electric field at a point is the electrostatic force per unit positive test charge placed at that point. It is a <strong>vector quantity</strong>.</p>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">ELECTRIC FIELD STRENGTH</div>
+      $$\\vec{E} = \\frac{\\vec{F}}{q_0} \\quad \\text{(N/C or V/m)}$$
+    </div>
+    <div class="key-point">
+      <div class="key-point-icon">💡</div>
+      <p>The test charge q₀ must be infinitesimally small so it doesn't disturb the original charge distribution.</p>
+    </div>
+  </div>
+
+  <div id="ef-point" style="display:none">
+    <div class="concept">
+      <div class="concept-label">POINT CHARGE</div>
+      <h3>Electric Field due to a Point Charge</h3>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">E-FIELD OF POINT CHARGE</div>
+      $$E = \\frac{1}{4\\pi\\epsilon_0}\\frac{q}{r^2} = \\frac{kq}{r^2}$$
+      <p style="color:var(--muted);font-size:12px;margin-top:6px">Direction: radially outward from +ve charge; radially inward toward −ve charge</p>
+    </div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg" style="max-width:480px;width:100%">
+        <defs>
+          <marker id="ea" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#4fc3f7"/></marker>
+          <marker id="eb" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#f06292"/></marker>
+        </defs>
+        <!-- +q radially outward -->
+        <circle cx="120" cy="100" r="18" fill="#f06292" opacity=".8"/>
+        <text x="120" y="105" text-anchor="middle" fill="white" font-size="13">+q</text>
+        <line x1="138" y1="100" x2="175" y2="100" stroke="#4fc3f7" stroke-width="2" marker-end="url(#ea)"/>
+        <line x1="130" y1="87" x2="155" y2="72" stroke="#4fc3f7" stroke-width="2" marker-end="url(#ea)"/>
+        <line x1="130" y1="113" x2="155" y2="128" stroke="#4fc3f7" stroke-width="2" marker-end="url(#ea)"/>
+        <line x1="120" y1="82" x2="120" y2="55" stroke="#4fc3f7" stroke-width="2" marker-end="url(#ea)"/>
+        <line x1="120" y1="118" x2="120" y2="145" stroke="#4fc3f7" stroke-width="2" marker-end="url(#ea)"/>
+        <line x1="102" y1="87" x2="77" y2="72" stroke="#4fc3f7" stroke-width="2" marker-end="url(#ea)"/>
+        <line x1="102" y1="113" x2="77" y2="128" stroke="#4fc3f7" stroke-width="2" marker-end="url(#ea)"/>
+        <line x1="102" y1="100" x2="65" y2="100" stroke="#4fc3f7" stroke-width="2" marker-end="url(#ea)"/>
+        <text x="120" y="175" text-anchor="middle" fill="#4fc3f7" font-size="11">E radially outward (+q)</text>
+        <!-- −q radially inward -->
+        <circle cx="360" cy="100" r="18" fill="#4fc3f7" opacity=".8"/>
+        <text x="360" y="105" text-anchor="middle" fill="white" font-size="13">−q</text>
+        <line x1="396" y1="100" x2="383" y2="100" stroke="#f06292" stroke-width="2" marker-end="url(#eb)"/>
+        <line x1="380" y1="70" x2="370" y2="82" stroke="#f06292" stroke-width="2" marker-end="url(#eb)"/>
+        <line x1="380" y1="130" x2="370" y2="118" stroke="#f06292" stroke-width="2" marker-end="url(#eb)"/>
+        <line x1="360" y1="50" x2="360" y2="78" stroke="#f06292" stroke-width="2" marker-end="url(#eb)"/>
+        <line x1="360" y1="150" x2="360" y2="122" stroke="#f06292" stroke-width="2" marker-end="url(#eb)"/>
+        <line x1="324" y1="100" x2="337" y2="100" stroke="#f06292" stroke-width="2" marker-end="url(#eb)"/>
+        <text x="360" y="175" text-anchor="middle" fill="#f06292" font-size="11">E radially inward (−q)</text>
+      </svg>
+      <div class="diagram-caption">Electric field lines from +q and toward −q</div>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">E vs r GRAPH</div>
+      <p style="color:var(--text);font-size:13px">E ∝ 1/r² (hyperbolic decrease with distance)</p>
+      <svg viewBox="0 0 300 160" style="max-width:300px;width:100%;margin-top:12px">
+        <line x1="30" y1="130" x2="290" y2="130" stroke="#555" stroke-width="1.5"/>
+        <line x1="30" y1="130" x2="30" y2="10" stroke="#555" stroke-width="1.5"/>
+        <text x="295" y="134" fill="#999" font-size="11">r</text>
+        <text x="34" y="14" fill="#999" font-size="11">E</text>
+        <path d="M35,20 Q60,25 90,40 Q130,60 180,90 Q220,110 280,125" fill="none" stroke="#4fc3f7" stroke-width="2.5"/>
+        <text x="200" y="70" fill="#4fc3f7" font-size="11">E = kq/r²</text>
+      </svg>
+    </div>
+  </div>
+
+  <div id="ef-null" style="display:none">
+    <div class="concept">
+      <div class="concept-label">NULL POINT</div>
+      <h3>Null Point (Point of Zero Field)</h3>
+      <p>The point where net electric field due to two or more charges is zero.</p>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">FOR TWO LIKE CHARGES +q AND +4q SEPARATED BY d</div>
+      <p style="color:var(--text);font-size:14px;line-height:1.7">
+        Null point lies <strong>between</strong> the charges.<br>
+        Let null point be at distance x from +q.<br><br>
+        kq/x² = k(4q)/(d−x)²<br>
+        ⟹ (d−x)² = 4x²<br>
+        ⟹ d−x = 2x ⟹ <strong>x = d/3</strong> from +q
+      </p>
+    </div>
+    <div class="key-point">
+      <div class="key-point-icon">💡</div>
+      <p>For <strong>unlike charges</strong> (−q and +4q), the null point lies <strong>outside</strong>, on the side of the smaller charge. x = d/(√(Q₂/Q₁) − 1) from the smaller charge.</p>
+    </div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 500 100" xmlns="http://www.w3.org/2000/svg" style="max-width:500px;width:100%">
+        <circle cx="80" cy="50" r="18" fill="none" stroke="#f06292" stroke-width="2"/>
+        <text x="80" y="55" text-anchor="middle" fill="#f06292" font-size="12">+q</text>
+        <circle cx="380" cy="50" r="22" fill="none" stroke="#f06292" stroke-width="2"/>
+        <text x="380" y="55" text-anchor="middle" fill="#f06292" font-size="12">+4q</text>
+        <!-- null point -->
+        <circle cx="193" cy="50" r="6" fill="#ffb74d"/>
+        <text x="193" y="85" text-anchor="middle" fill="#ffb74d" font-size="11">Null Point</text>
+        <!-- distance labels -->
+        <line x1="98" y1="75" x2="187" y2="75" stroke="#999" stroke-width="1"/>
+        <text x="143" y="90" text-anchor="middle" fill="#999" font-size="11">d/3</text>
+        <line x1="200" y1="75" x2="358" y2="75" stroke="#999" stroke-width="1"/>
+        <text x="280" y="90" text-anchor="middle" fill="#999" font-size="11">2d/3</text>
+      </svg>
+      <div class="diagram-caption">Null point at d/3 from smaller charge (between like charges)</div>
+    </div>
+  </div>
+  `
+},
+
+distributions: {
+  title: "Continuous Charge Distributions",
+  html: `
+  <div class="concept">
+    <div class="concept-label">TYPES</div>
+    <h3>Types of Charge Distribution</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:14px;margin-top:8px">
+      <tr style="border-bottom:1px solid var(--border)">
+        <th style="padding:10px;color:var(--accent)">Type</th>
+        <th style="padding:10px;color:var(--accent)">Symbol</th>
+        <th style="padding:10px;color:var(--accent)">Element</th>
+        <th style="padding:10px;color:var(--accent)">Unit</th>
+      </tr>
+      <tr>
+        <td style="padding:10px">Linear</td>
+        <td style="padding:10px">λ</td>
+        <td style="padding:10px">dq = λ dl</td>
+        <td style="padding:10px">C/m</td>
+      </tr>
+      <tr>
+        <td style="padding:10px">Surface</td>
+        <td style="padding:10px">σ</td>
+        <td style="padding:10px">dq = σ dA</td>
+        <td style="padding:10px">C/m²</td>
+      </tr>
+      <tr>
+        <td style="padding:10px">Volume</td>
+        <td style="padding:10px">ρ</td>
+        <td style="padding:10px">dq = ρ dV</td>
+        <td style="padding:10px">C/m³</td>
+      </tr>
     </table>
   </div>
-</div>
 
-<!-- 2.2 pickle -->
-<div class="subsection">
-  <h3 class="subsection-title"><span class="dot dot-amber"></span>The <code>pickle</code> Module</h3>
-  <p>To store or retrieve Python objects (lists, dicts, tuples, etc.) from a binary file, you use <code>pickle</code>.</p>
+  <div class="inner-tabs" style="margin-top:24px">
+    <button class="inner-tab active" onclick="innerTab(this,'d-arc')">Arc / Ring</button>
+    <button class="inner-tab" onclick="innerTab(this,'d-wire')">Straight Wire</button>
+    <button class="inner-tab" onclick="innerTab(this,'d-disc')">Disc / Sheet</button>
+  </div>
 
-  <div class="compare">
-    <div class="compare-card">
-      <div class="compare-card-title" style="color:var(--amber)">🔽 Pickling (Serialization)</div>
+  <div id="d-arc">
+    <div class="concept">
+      <div class="concept-label">DERIVATION</div>
+      <h3>E-Field Due to Uniformly Charged Arc at Centre</h3>
+      <p>Consider an arc of radius R, linear charge density λ, subtending angle 2α at centre. Take a small element dℓ = R dθ.</p>
+    </div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 360 280" xmlns="http://www.w3.org/2000/svg" style="max-width:360px;width:100%">
+        <defs>
+          <marker id="arc-a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#4fc3f7"/></marker>
+        </defs>
+        <!-- arc -->
+        <path d="M 100 80 A 110 110 0 0 1 260 80" fill="none" stroke="#4fc3f7" stroke-width="3"/>
+        <!-- centre -->
+        <circle cx="180" cy="170" r="4" fill="#ffb74d"/>
+        <text x="190" y="175" fill="#ffb74d" font-size="12">O (centre)</text>
+        <!-- R lines -->
+        <line x1="180" y1="170" x2="100" y2="80" stroke="#555" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <line x1="180" y1="170" x2="260" y2="80" stroke="#555" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <!-- small element -->
+        <path d="M 155 82 A 110 110 0 0 1 175 77" fill="none" stroke="#f06292" stroke-width="5"/>
+        <text x="150" y="65" fill="#f06292" font-size="11">dℓ = Rdθ</text>
+        <!-- dE arrow toward centre -->
+        <line x1="165" y1="80" x2="175" y2="130" stroke="#4fc3f7" stroke-width="2" marker-end="url(#arc-a)"/>
+        <text x="140" y="110" fill="#4fc3f7" font-size="11">dE</text>
+        <!-- angle label -->
+        <text x="155" y="150" fill="#81c784" font-size="11">θ</text>
+        <!-- by symmetry note -->
+        <text x="180" y="240" text-anchor="middle" fill="#999" font-size="11">By symmetry, E_x components cancel</text>
+        <text x="180" y="258" text-anchor="middle" fill="#999" font-size="11">Net E is along bisector (downward here)</text>
+      </svg>
+      <div class="diagram-caption">Small element dℓ contributes dE; by symmetry only the component along bisector survives</div>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">RESULT FOR UNIFORMLY CHARGED ARC (semi-angle α at centre)</div>
+      $$dE = \\frac{k\\,dq}{R^2} = \\frac{k\\lambda R\\,d\\theta}{R^2} = \\frac{k\\lambda\\,d\\theta}{R}$$
+      $$E = \\int_{-\\alpha}^{\\alpha} \\frac{k\\lambda}{R}\\cos\\theta\\,d\\theta = \\frac{2k\\lambda\\sin\\alpha}{R}$$
+      <p style="color:var(--muted);font-size:12px;margin-top:8px">
+        α = 90° (semicircle): E = 2kλ/R<br>
+        α = 180° (full circle): E = 0 (by symmetry)
+      </p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-label">CHARGED RING — AXIAL POINT</div>
+      <h3>E-Field of Uniformly Charged Ring at Axial Point P</h3>
+    </div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg" style="max-width:480px;width:100%">
+        <defs>
+          <marker id="ra" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#4fc3f7"/></marker>
+          <marker id="rb" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#81c784"/></marker>
+        </defs>
+        <!-- ring (ellipse) -->
+        <ellipse cx="160" cy="110" rx="40" ry="90" fill="none" stroke="#4fc3f7" stroke-width="2" opacity=".8"/>
+        <!-- axis -->
+        <line x1="160" y1="110" x2="400" y2="110" stroke="#555" stroke-width="1" stroke-dasharray="5,3"/>
+        <!-- point P -->
+        <circle cx="380" cy="110" r="5" fill="#f06292"/>
+        <text x="388" y="115" fill="#f06292" font-size="12">P</text>
+        <!-- small element on ring -->
+        <circle cx="160" cy="40" r="6" fill="#ffb74d"/>
+        <text x="130" y="38" fill="#ffb74d" font-size="11">dq</text>
+        <!-- r from dq to P -->
+        <line x1="162" y1="44" x2="376" y2="108" stroke="#81c784" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="280" y="70" fill="#81c784" font-size="11">r</text>
+        <!-- dE along axis -->
+        <line x1="376" y1="110" x2="420" y2="110" stroke="#4fc3f7" stroke-width="2.5" marker-end="url(#ra)"/>
+        <text x="415" y="100" fill="#4fc3f7" font-size="11">E</text>
+        <!-- a and x labels -->
+        <line x1="160" y1="115" x2="160" y2="40" stroke="#999" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="140" y="80" fill="#999" font-size="11">a (radius)</text>
+        <text x="255" y="126" fill="#999" font-size="11">x</text>
+      </svg>
+      <div class="diagram-caption">Each element dq on ring contributes dE; axial components add up, perpendicular cancel</div>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">ELECTRIC FIELD ON AXIS OF RING</div>
+      $$E = \\frac{kQx}{(x^2 + a^2)^{3/2}}$$
+      <p style="color:var(--muted);font-size:12px;margin-top:6px">
+        Max E at x = a/√2 (from ring centre). At centre x=0: E = 0.<br>
+        For x ≫ a: E ≈ kQ/x² (behaves like point charge)
+      </p>
+    </div>
+    <div class="key-point">
+      <div class="key-point-icon">💡</div>
+      <p><strong>Time period of oscillation</strong> of charge −q,m along axis of ring (+Q): For small displacement, restoring force ∝ displacement ⟹ SHM. T = 2π√(4πε₀ma³/Qq)</p>
+    </div>
+  </div>
+
+  <div id="d-wire" style="display:none">
+    <div class="concept">
+      <div class="concept-label">DERIVATION</div>
+      <h3>E-Field Due to Finite Uniformly Charged Wire at Point P</h3>
+      <p>Wire has linear charge density λ, length L. Point P is at perpendicular distance d from wire. Wire makes angles α (above P) and β (below P) from perpendicular.</p>
+    </div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 440 300" xmlns="http://www.w3.org/2000/svg" style="max-width:440px;width:100%">
+        <defs>
+          <marker id="wa" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#4fc3f7"/></marker>
+          <marker id="wb" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#f06292"/></marker>
+        </defs>
+        <!-- wire -->
+        <line x1="150" y1="30" x2="150" y2="270" stroke="#4fc3f7" stroke-width="3"/>
+        <!-- point P -->
+        <circle cx="320" cy="150" r="6" fill="#f06292"/>
+        <text x="330" y="155" fill="#f06292" font-size="12">P</text>
+        <!-- perpendicular from P to wire -->
+        <line x1="150" y1="150" x2="314" y2="150" stroke="#555" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="230" y="142" fill="#999" font-size="11">d (perp. distance)</text>
+        <!-- element on wire -->
+        <rect x="143" y="105" width="14" height="8" fill="#ffb74d" opacity=".8"/>
+        <text x="110" y="115" fill="#ffb74d" font-size="11">dq=λdl</text>
+        <!-- line from element to P -->
+        <line x1="157" y1="109" x2="316" y2="149" stroke="#81c784" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <!-- dE from P -->
+        <line x1="320" y1="150" x2="375" y2="115" stroke="#4fc3f7" stroke-width="2" marker-end="url(#wa)"/>
+        <text x="368" y="108" fill="#4fc3f7" font-size="11">dE</text>
+        <!-- angles -->
+        <text x="160" y="135" fill="#ffb74d" font-size="11">α</text>
+        <text x="160" y="178" fill="#ffb74d" font-size="11">β</text>
+        <!-- angle arcs -->
+        <path d="M 150 148 A 20 20 0 0 1 165 135" fill="none" stroke="#ffb74d" stroke-width="1.2"/>
+        <path d="M 150 152 A 20 20 0 0 0 165 165" fill="none" stroke="#ffb74d" stroke-width="1.2"/>
+      </svg>
+      <div class="diagram-caption">Element dq on wire; angle from perpendicular ranges from −β to +α</div>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">E-FIELD DUE TO FINITE WIRE</div>
+      $$E_\\perp = \\frac{k\\lambda}{d}(\\sin\\alpha + \\sin\\beta)$$
+      $$E_\\parallel = \\frac{k\\lambda}{d}(\\cos\\beta - \\cos\\alpha)$$
+      <p style="color:var(--muted);font-size:12px;margin-top:8px">
+        α, β are angles subtended by wire ends from perpendicular from P
+      </p>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">SPECIAL CASES</div>
+      <p style="color:var(--text);font-size:14px;line-height:1.8">
+        <strong>Infinite wire</strong> (α = β = 90°): E = 2kλ/d = λ/(2πε₀d)<br>
+        <strong>Semi-infinite wire</strong> (α = 90°, β = 0°): E_⊥ = kλ/d, E_∥ = kλ/d<br>
+        ⟹ net E = kλ√2/d at 45° to wire<br>
+        <strong>At perpendicular bisector</strong> of length-L wire: E = 2kλL/(d√(4d²+L²))
+      </p>
+    </div>
+  </div>
+
+  <div id="d-disc" style="display:none">
+    <div class="concept">
+      <div class="concept-label">DERIVATION</div>
+      <h3>E-Field Due to Uniformly Charged Disc at Axial Point</h3>
+      <p>Surface charge density σ, radius R. Use ring as element: ring at radius r, width dr has dq = σ·2πr·dr.</p>
+    </div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg" style="max-width:480px;width:100%">
+        <defs>
+          <marker id="da" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#4fc3f7"/></marker>
+        </defs>
+        <!-- disc face -->
+        <ellipse cx="160" cy="100" rx="35" ry="80" fill="rgba(79,195,247,.1)" stroke="#4fc3f7" stroke-width="2"/>
+        <!-- ring element on disc -->
+        <ellipse cx="160" cy="100" rx="20" ry="45" fill="none" stroke="#ffb74d" stroke-width="2.5"/>
+        <text x="100" y="65" fill="#ffb74d" font-size="11">ring r, dr</text>
+        <!-- axis -->
+        <line x1="160" y1="100" x2="400" y2="100" stroke="#555" stroke-width="1" stroke-dasharray="5,3"/>
+        <!-- P -->
+        <circle cx="380" cy="100" r="5" fill="#f06292"/>
+        <text x="390" y="105" fill="#f06292" font-size="12">P</text>
+        <!-- E arrow -->
+        <line x1="380" y1="100" x2="430" y2="100" stroke="#4fc3f7" stroke-width="2.5" marker-end="url(#da)"/>
+        <text x="418" y="92" fill="#4fc3f7" font-size="11">E</text>
+        <!-- R label -->
+        <line x1="160" y1="100" x2="160" y2="25" stroke="#999" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="165" y="65" fill="#999" font-size="11">R</text>
+        <!-- x label -->
+        <text x="260" y="92" fill="#999" font-size="11">x</text>
+      </svg>
+      <div class="diagram-caption">Disc divided into concentric rings; each ring contributes dE along axis</div>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">E-FIELD DUE TO DISC AT AXIAL POINT P</div>
+      $$E = \\frac{\\sigma}{2\\epsilon_0}\\left(1 - \\frac{x}{\\sqrt{x^2 + R^2}}\\right)$$
+      <p style="color:var(--muted);font-size:12px;margin-top:8px">
+        As R → ∞ (infinite sheet): E = σ/(2ε₀)<br>
+        For x ≫ R: E ≈ σπR²/(4πε₀x²) = kQ/x² (point charge)
+      </p>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">INFINITE SHEET</div>
+      $$E = \\frac{\\sigma}{2\\epsilon_0}$$
+      <p style="color:var(--muted);font-size:12px;margin-top:6px">Uniform, independent of distance. Direction ⊥ to sheet.</p>
+    </div>
+  </div>
+  `
+},
+
+dipole: {
+  title: "Electric Dipole",
+  html: `
+  <div class="concept">
+    <div class="concept-label">DEFINITION</div>
+    <h3>Electric Dipole</h3>
+    <p>An electric dipole consists of two point charges equal in magnitude but opposite in sign (+q and −q) separated by a small distance 2a.</p>
+  </div>
+  <div class="formula-box">
+    <div class="formula-title">DIPOLE MOMENT</div>
+    $$\\vec{p} = q(2a)\\hat{a}$$
+    <p style="color:var(--muted);font-size:12px;margin-top:6px">Direction: from −q to +q (along axis). Unit: C·m</p>
+  </div>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 480 120" xmlns="http://www.w3.org/2000/svg" style="max-width:480px;width:100%">
+      <defs>
+        <marker id="dpa" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#81c784"/></marker>
+      </defs>
+      <!-- −q -->
+      <circle cx="120" cy="60" r="22" fill="none" stroke="#4fc3f7" stroke-width="2"/>
+      <text x="120" y="65" text-anchor="middle" fill="#4fc3f7" font-size="14">−q</text>
+      <!-- +q -->
+      <circle cx="360" cy="60" r="22" fill="none" stroke="#f06292" stroke-width="2"/>
+      <text x="360" y="65" text-anchor="middle" fill="#f06292" font-size="14">+q</text>
+      <!-- dipole axis -->
+      <line x1="60" y1="60" x2="430" y2="60" stroke="#333" stroke-width="1" stroke-dasharray="4,3"/>
+      <!-- p vector -->
+      <line x1="140" y1="60" x2="338" y2="60" stroke="#81c784" stroke-width="2.5" marker-end="url(#dpa)"/>
+      <text x="240" y="50" text-anchor="middle" fill="#81c784" font-size="13">p⃗</text>
+      <!-- 2a label -->
+      <text x="240" y="82" text-anchor="middle" fill="#999" font-size="11">← 2a →</text>
+      <!-- equatorial label -->
+      <line x1="240" y1="20" x2="240" y2="100" stroke="#ffb74d" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="250" y="18" fill="#ffb74d" font-size="11">Equatorial</text>
+    </svg>
+    <div class="diagram-caption">Dipole: p⃗ points from −q to +q; equatorial plane is perpendicular bisector</div>
+  </div>
+  <div class="inner-tabs">
+    <button class="inner-tab active" onclick="innerTab(this,'dp-axial')">Axial Field</button>
+    <button class="inner-tab" onclick="innerTab(this,'dp-equatorial')">Equatorial Field</button>
+    <button class="inner-tab" onclick="innerTab(this,'dp-torque')">In Ext. Field</button>
+  </div>
+  <div id="dp-axial">
+    <div class="formula-box">
+      <div class="formula-title">E ON AXIAL LINE (along dipole axis at distance r from centre)</div>
+      $$E_{axial} = \\frac{2kpr}{(r^2 - a^2)^2}$$
+      <p style="color:var(--muted);font-size:13px;margin-top:6px">For r ≫ a (short dipole): $$E_{axial} \\approx \\frac{2kp}{r^3}$$</p>
+      <p style="color:var(--text);font-size:13px;margin-top:6px">Direction: same as p⃗ (from −q to +q direction)</p>
+    </div>
+  </div>
+  <div id="dp-equatorial" style="display:none">
+    <div class="formula-box">
+      <div class="formula-title">E ON EQUATORIAL LINE (perpendicular bisector at distance r)</div>
+      $$E_{eq} = \\frac{kp}{(r^2 + a^2)^{3/2}}$$
+      <p style="color:var(--muted);font-size:13px;margin-top:6px">For r ≫ a: $$E_{eq} \\approx \\frac{kp}{r^3}$$</p>
+      <p style="color:var(--text);font-size:13px;margin-top:6px">Direction: opposite to p⃗ (anti-parallel)</p>
+    </div>
+    <div class="key-point">
+      <div class="key-point-icon">💡</div>
+      <p>E_axial = 2 × E_equatorial (for same distance from short dipole). The equatorial field is anti-parallel to p⃗.</p>
+    </div>
+  </div>
+  <div id="dp-torque" style="display:none">
+    <div class="formula-box">
+      <div class="formula-title">DIPOLE IN UNIFORM EXTERNAL FIELD E</div>
+      $$\\tau = pE\\sin\\theta = \\vec{p}\\times\\vec{E}$$
+      $$U = -pE\\cos\\theta = -\\vec{p}\\cdot\\vec{E}$$
+      $$F_{net} = 0 \\text{ (in uniform field)}$$
+    </div>
+    <div class="concept">
+      <h3>Equilibrium of Dipole in Uniform Field</h3>
       <ul>
-        <li>Converts a Python object → byte stream</li>
-        <li>Function: <code>pickle.dump(data, file)</code></li>
-        <li>File must be opened in <strong>write binary</strong> mode: <code>'wb'</code></li>
+        <li><strong>θ = 0°:</strong> Stable equilibrium (p⃗ ∥ E⃗), U = −pE (minimum)</li>
+        <li><strong>θ = 180°:</strong> Unstable equilibrium (p⃗ anti-parallel to E⃗), U = +pE (maximum)</li>
+        <li><strong>θ = 90°:</strong> Maximum torque τ = pE</li>
       </ul>
     </div>
-    <div class="compare-card">
-      <div class="compare-card-title" style="color:var(--teal)">🔼 Unpickling (Deserialization)</div>
+    <div class="formula-box">
+      <div class="formula-title">IN NON-UNIFORM FIELD</div>
+      $$F_{net} \\neq 0, \\quad F = p\\frac{dE}{dx} \\text{ (along field direction)}$$
+    </div>
+  </div>
+  `
+},
+
+fieldlines: {
+  title: "Electric Field Lines",
+  html: `
+  <div class="concept">
+    <div class="concept-label">DEFINITION</div>
+    <h3>Electric Field Lines</h3>
+    <p>An imaginary line whose tangent at any point gives the direction of the electric field at that point. Also called lines of force.</p>
+  </div>
+  <div class="concept">
+    <div class="concept-label">PROPERTIES</div>
+    <h3>Key Properties</h3>
+    <ul>
+      <li>Originate from +ve charge and terminate on −ve charge (in the absence of time-varying B-fields)</li>
+      <li>Do NOT form closed loops</li>
+      <li>Two field lines <strong>never intersect</strong> (otherwise two directions of E at one point)</li>
+      <li>Number of lines ∝ magnitude of charge</li>
+      <li>Denser lines → stronger field</li>
+      <li>In uniform field: straight, parallel, equally spaced</li>
+      <li>They contract longitudinally (along themselves) and expand laterally (sideways)</li>
+    </ul>
+  </div>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg" style="max-width:500px;width:100%">
+      <defs>
+        <marker id="fla" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="#4fc3f7"/></marker>
+        <marker id="flb" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="#f06292"/></marker>
+      </defs>
+      <!-- +q charge -->
+      <circle cx="130" cy="100" r="20" fill="#f06292" opacity=".8"/>
+      <text x="130" y="105" text-anchor="middle" fill="white" font-size="14">+q</text>
+      <!-- field lines from +q -->
+      <line x1="150" y1="100" x2="210" y2="100" stroke="#4fc3f7" stroke-width="1.5" marker-end="url(#fla)"/>
+      <line x1="144" y1="83" x2="195" y2="60" stroke="#4fc3f7" stroke-width="1.5" marker-end="url(#fla)"/>
+      <line x1="144" y1="117" x2="195" y2="140" stroke="#4fc3f7" stroke-width="1.5" marker-end="url(#fla)"/>
+      <line x1="130" y1="80" x2="130" y2="30" stroke="#4fc3f7" stroke-width="1.5" marker-end="url(#fla)"/>
+      <line x1="130" y1="120" x2="130" y2="170" stroke="#4fc3f7" stroke-width="1.5" marker-end="url(#fla)"/>
+      <line x1="116" y1="83" x2="75" y2="55" stroke="#4fc3f7" stroke-width="1.5" marker-end="url(#fla)"/>
+      <line x1="116" y1="117" x2="75" y2="145" stroke="#4fc3f7" stroke-width="1.5" marker-end="url(#fla)"/>
+      <line x1="110" y1="100" x2="50" y2="100" stroke="#4fc3f7" stroke-width="1.5" marker-end="url(#fla)"/>
+      <!-- −q charge -->
+      <circle cx="370" cy="100" r="20" fill="#4fc3f7" opacity=".8"/>
+      <text x="370" y="105" text-anchor="middle" fill="white" font-size="14">−q</text>
+      <!-- field lines into −q -->
+      <line x1="290" y1="100" x2="350" y2="100" stroke="#f06292" stroke-width="1.5" marker-end="url(#flb)"/>
+      <line x1="295" y1="70" x2="355" y2="84" stroke="#f06292" stroke-width="1.5" marker-end="url(#flb)"/>
+      <line x1="295" y1="130" x2="355" y2="116" stroke="#f06292" stroke-width="1.5" marker-end="url(#flb)"/>
+      <line x1="370" y1="25" x2="370" y2="80" stroke="#f06292" stroke-width="1.5" marker-end="url(#flb)"/>
+      <line x1="370" y1="175" x2="370" y2="120" stroke="#f06292" stroke-width="1.5" marker-end="url(#flb)"/>
+      <line x1="430" y1="55" x2="388" y2="82" stroke="#f06292" stroke-width="1.5" marker-end="url(#flb)"/>
+      <line x1="430" y1="145" x2="388" y2="118" stroke="#f06292" stroke-width="1.5" marker-end="url(#flb)"/>
+      <line x1="450" y1="100" x2="392" y2="100" stroke="#f06292" stroke-width="1.5" marker-end="url(#flb)"/>
+    </svg>
+    <div class="diagram-caption">Field lines from +q to −q; denser near charges indicates stronger field</div>
+  </div>
+  `
+},
+
+motion: {
+  title: "Motion of Charged Particle in Electric Field",
+  html: `
+  <div class="inner-tabs">
+    <button class="inner-tab active" onclick="innerTab(this,'m-along')">Motion Along E</button>
+    <button class="inner-tab" onclick="innerTab(this,'m-perp')">Projectile in E</button>
+    <button class="inner-tab" onclick="innerTab(this,'m-gravity')">With Gravity</button>
+  </div>
+
+  <div id="m-along">
+    <div class="concept">
+      <div class="concept-label">CASE 1: PARTICLE MOVING ALONG E (NO GRAVITY)</div>
+      <h3>Rectilinear Motion</h3>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">EQUATIONS</div>
+      <p style="color:var(--text);font-size:14px;line-height:1.9">
+        Force: \\(F = qE\\)<br>
+        Acceleration: \\(a = \\dfrac{qE}{m}\\)<br>
+        Speed: \\(v = u + at\\)<br>
+        Distance: \\(s = ut + \\frac{1}{2}at^2\\)<br>
+        KE gained: \\(\\Delta KE = qEd\\) (work done by electric force over distance d)
+      </p>
+    </div>
+  </div>
+
+  <div id="m-perp" style="display:none">
+    <div class="concept">
+      <div class="concept-label">CASE 2: PARTICLE MOVING PERPENDICULAR TO E (PROJECTILE, NO GRAVITY)</div>
+    </div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg" style="max-width:480px;width:100%">
+        <defs>
+          <marker id="ma" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#4fc3f7"/></marker>
+          <marker id="mb" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#ffb74d"/></marker>
+        </defs>
+        <!-- plates -->
+        <line x1="40" y1="20" x2="440" y2="20" stroke="#f06292" stroke-width="3"/>
+        <text x="30" y="15" fill="#f06292" font-size="11">+</text>
+        <line x1="40" y1="200" x2="440" y2="200" stroke="#4fc3f7" stroke-width="3"/>
+        <text x="30" y="205" fill="#4fc3f7" font-size="11">−</text>
+        <!-- E field lines downward -->
+        <line x1="100" y1="30" x2="100" y2="185" stroke="#555" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#ma)"/>
+        <line x1="200" y1="30" x2="200" y2="185" stroke="#555" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#ma)"/>
+        <line x1="300" y1="30" x2="300" y2="185" stroke="#555" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#ma)"/>
+        <text x="350" y="120" fill="#4fc3f7" font-size="12">E⃗</text>
+        <!-- particle path -->
+        <path d="M 60 110 Q 240 110 400 170" fill="none" stroke="#ffb74d" stroke-width="2.5"/>
+        <!-- initial velocity arrow -->
+        <line x1="60" y1="110" x2="110" y2="110" stroke="#81c784" stroke-width="2" marker-end="url(#mb)"/>
+        <text x="78" y="100" fill="#81c784" font-size="11">u (initial)</text>
+        <!-- particle -->
+        <circle cx="60" cy="110" r="6" fill="#f06292"/>
+        <text x="68" y="115" fill="#f06292" font-size="10">+q,m</text>
+      </svg>
+      <div class="diagram-caption">Charged particle enters perpendicular to uniform E — analogous to projectile motion under gravity</div>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">PROJECTILE ANALOGY (u = horizontal, a = qE/m vertical)</div>
+      <p style="color:var(--text);font-size:14px;line-height:1.9">
+        Time of flight: \\(T = \\dfrac{L}{u}\\) (L = plate length)<br>
+        Vertical deflection: \\(y = \\dfrac{1}{2}aT^2 = \\dfrac{qEL^2}{2mu^2}\\)<br>
+        Final vertical speed: \\(v_y = aT = \\dfrac{qEL}{mu}\\)<br>
+        Angle of deflection: \\(\\tan\\phi = \\dfrac{v_y}{u} = \\dfrac{qEL}{mu^2}\\)
+      </p>
+    </div>
+  </div>
+
+  <div id="m-gravity" style="display:none">
+    <div class="concept">
+      <div class="concept-label">CASE 3: WHEN GRAVITY IS CONSIDERED</div>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">EFFECTIVE GRAVITY CONCEPT</div>
+      <p style="color:var(--text);font-size:14px;line-height:1.9">
+        Electric force: \\(F_E = qE\\) (upward if +q in upward E)<br>
+        Gravity: \\(mg\\) (downward)<br><br>
+        <strong>Effective g:</strong> \\(g_{eff} = g - \\dfrac{qE}{m}\\) (if E upward for +q)<br><br>
+        Use g_eff everywhere in place of g for all kinematic calculations.
+      </p>
+    </div>
+    <div class="key-point">
+      <div class="key-point-icon">💡</div>
+      <p><strong>For circular motion in E:</strong> Minimum speed at bottom = √(5g_eff·R), where R is radius of circle and g_eff = g ± qE/m depending on direction.</p>
+    </div>
+  </div>
+  `
+},
+
+flux: {
+  title: "Electric Flux & Solid Angle",
+  html: `
+  <div class="inner-tabs">
+    <button class="inner-tab active" onclick="innerTab(this,'fx-flux')">Electric Flux</button>
+    <button class="inner-tab" onclick="innerTab(this,'fx-solid')">Solid Angle</button>
+  </div>
+
+  <div id="fx-flux">
+    <div class="concept">
+      <div class="concept-label">DEFINITION</div>
+      <h3>Electric Flux</h3>
+      <p>Electric flux through a surface is the total number of electric field lines passing through that surface.</p>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">ELECTRIC FLUX</div>
+      $$d\\phi = \\vec{E}\\cdot d\\vec{S} = E\\,dS\\cos\\theta$$
+      $$\\phi = \\int \\vec{E}\\cdot d\\vec{S}$$
+      $$\\text{Closed surface: }\\phi = \\oint \\vec{E}\\cdot d\\vec{S}$$
+      <p style="color:var(--muted);font-size:12px;margin-top:6px">Unit: N·m²/C or V·m. θ is angle between E⃗ and dS⃗ (outward normal).</p>
+    </div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 480 180" xmlns="http://www.w3.org/2000/svg" style="max-width:480px;width:100%">
+        <defs>
+          <marker id="fxa" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#4fc3f7"/></marker>
+          <marker id="fxb" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#81c784"/></marker>
+        </defs>
+        <!-- flat surface -->
+        <ellipse cx="130" cy="120" rx="70" ry="30" fill="rgba(79,195,247,.1)" stroke="#4fc3f7" stroke-width="1.5"/>
+        <!-- normal -->
+        <line x1="130" y1="120" x2="130" y2="30" stroke="#81c784" stroke-width="2" marker-end="url(#fxb)"/>
+        <text x="138" y="70" fill="#81c784" font-size="11">dS⃗ (normal)</text>
+        <!-- E arrows -->
+        <line x1="60" y1="90" x2="90" y2="70" stroke="#4fc3f7" stroke-width="2" marker-end="url(#fxa)"/>
+        <line x1="100" y1="90" x2="130" y2="70" stroke="#4fc3f7" stroke-width="2" marker-end="url(#fxa)"/>
+        <line x1="140" y1="90" x2="170" y2="70" stroke="#4fc3f7" stroke-width="2" marker-end="url(#fxa)"/>
+        <text x="130" y="165" text-anchor="middle" fill="#4fc3f7" font-size="11">φ = E·dS (θ=0°)</text>
+        <!-- tilted surface -->
+        <ellipse cx="370" cy="120" rx="70" ry="20" fill="rgba(79,195,247,.1)" stroke="#4fc3f7" stroke-width="1.5" transform="rotate(-30,370,120)"/>
+        <line x1="370" y1="120" x2="420" y2="50" stroke="#81c784" stroke-width="2" marker-end="url(#fxb)"/>
+        <line x1="310" y1="90" x2="340" y2="70" stroke="#4fc3f7" stroke-width="2" marker-end="url(#fxa)"/>
+        <line x1="350" y1="90" x2="380" y2="70" stroke="#4fc3f7" stroke-width="2" marker-end="url(#fxa)"/>
+        <line x1="390" y1="90" x2="420" y2="70" stroke="#4fc3f7" stroke-width="2" marker-end="url(#fxa)"/>
+        <text x="370" y="165" text-anchor="middle" fill="#4fc3f7" font-size="11">φ = E·dS·cosθ</text>
+      </svg>
+      <div class="diagram-caption">Flux depends on angle between E⃗ and surface normal dS⃗</div>
+    </div>
+  </div>
+
+  <div id="fx-solid" style="display:none">
+    <div class="concept">
+      <div class="concept-label">SOLID ANGLE</div>
+      <h3>Solid Angle (Ω)</h3>
+      <p>3D analogue of the plane angle. Defined as area intercepted on a sphere divided by square of radius.</p>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">SOLID ANGLE</div>
+      $$\\Omega = \\frac{S}{r^2} \\quad \\text{(steradian, sr)}$$
+      $$d\\Omega = \\frac{dS\\cos\\alpha}{r^2}$$
+      <p style="color:var(--muted);font-size:12px;margin-top:6px">α = angle between normal to surface and the line from point to surface</p>
+    </div>
+    <div class="concept">
+      <h3>Key Results</h3>
       <ul>
-        <li>Converts byte stream → Python object</li>
-        <li>Function: <code>pickle.load(file)</code></li>
-        <li>File must be opened in <strong>read binary</strong> mode: <code>'rb'</code></li>
+        <li>Total solid angle around a point = 4π sr</li>
+        <li>If point is <strong>inside</strong> any closed surface: solid angle = 4π</li>
+        <li>If point is <strong>outside</strong> any closed surface: solid angle = 0</li>
+        <li>Solid angle of hemisphere = 2π sr</li>
+        <li>For cone of semi-angle α: Ω = 2π(1 − cosα)</li>
+      </ul>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">FLUX DUE TO POINT CHARGE THROUGH ANY SURFACE</div>
+      $$\\phi = \\frac{q}{4\\pi\\epsilon_0} \\times \\Omega$$
+      $$\\text{Closed surface (charge inside): }\\phi = \\frac{q}{\\epsilon_0}$$
+      $$\\text{Closed surface (charge outside): }\\phi = 0$$
+    </div>
+    <div class="key-point">
+      <div class="key-point-icon">💡</div>
+      <p><strong>Trick for JEE:</strong> For charge q at centre of cube, flux through one face = q/(6ε₀). If charge is at corner, flux = q/(8ε₀) (charge is shared by 8 cubes).</p>
+    </div>
+  </div>
+  `
+},
+
+gauss: {
+  title: "Gauss's Law",
+  html: `
+  <div class="concept">
+    <div class="concept-label">STATEMENT</div>
+    <h3>Gauss's Law</h3>
+    <p>The total electric flux through any closed surface (Gaussian surface) is equal to the net charge enclosed by the surface divided by ε₀.</p>
+  </div>
+  <div class="formula-box">
+    <div class="formula-title">GAUSS'S LAW</div>
+    $$\\oint \\vec{E}\\cdot d\\vec{S} = \\frac{q_{enc}}{\\epsilon_0}$$
+    <p style="color:var(--muted);font-size:12px;margin-top:6px">
+      Left side: E due to ALL charges (inside + outside). Right side: only charges INSIDE the surface.
+    </p>
+  </div>
+  <div class="warn-box">
+    <div class="key-point-icon">⚠️</div>
+    <p>Gauss's law is always valid. But it's useful for calculating E only when the charge distribution has <strong>high symmetry</strong> (spherical, cylindrical, planar).</p>
+  </div>
+  <div class="inner-tabs" style="margin-top:20px">
+    <button class="inner-tab active" onclick="innerTab(this,'g-sphere')">Spherical Shell</button>
+    <button class="inner-tab" onclick="innerTab(this,'g-wire')">Infinite Wire</button>
+    <button class="inner-tab" onclick="innerTab(this,'g-sheet')">Infinite Sheet</button>
+    <button class="inner-tab" onclick="innerTab(this,'g-conductor')">Conductor</button>
+  </div>
+
+  <div id="g-sphere">
+    <div class="concept">
+      <div class="concept-label">APPLICATION 1</div>
+      <h3>E-field Due to Uniformly Charged Spherical Shell</h3>
+    </div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg" style="max-width:460px;width:100%">
+        <defs>
+          <marker id="gsa" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#4fc3f7"/></marker>
+        </defs>
+        <!-- shell -->
+        <circle cx="230" cy="100" r="65" fill="none" stroke="#4fc3f7" stroke-width="2" stroke-dasharray="5,3"/>
+        <circle cx="230" cy="100" r="65" fill="rgba(79,195,247,.05)"/>
+        <!-- inside gaussian surface (small) -->
+        <circle cx="230" cy="100" r="30" fill="none" stroke="#ffb74d" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="230" y="76" text-anchor="middle" fill="#ffb74d" font-size="10">Gaussian (r&lt;R)</text>
+        <!-- outside gaussian surface (large) -->
+        <circle cx="230" cy="100" r="90" fill="none" stroke="#81c784" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="230" y="5" text-anchor="middle" fill="#81c784" font-size="10">Gaussian (r&gt;R)</text>
+        <!-- charge on shell -->
+        <text x="230" y="42" text-anchor="middle" fill="#4fc3f7" font-size="11">+Q (on shell)</text>
+        <!-- E outside -->
+        <line x1="315" y1="100" x2="340" y2="100" stroke="#4fc3f7" stroke-width="2" marker-end="url(#gsa)"/>
+        <!-- labels -->
+        <text x="355" y="104" fill="#4fc3f7" font-size="11">E</text>
+      </svg>
+      <div class="diagram-caption">Spherical shell of charge Q, radius R: use spherical Gaussian surfaces</div>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">RESULTS</div>
+      <p style="color:var(--text);font-size:14px;line-height:1.8">
+        <strong>Outside (r &gt; R):</strong><br>
+        \\(E = \\dfrac{kQ}{r^2}\\) (behaves like point charge at centre)<br><br>
+        <strong>Inside (r &lt; R):</strong><br>
+        \\(E = 0\\) (q_enc = 0 for hollow shell)<br><br>
+        <strong>On surface (r = R):</strong><br>
+        \\(E = \\dfrac{kQ}{R^2} = \\dfrac{\\sigma}{\\epsilon_0}\\)
+      </p>
+    </div>
+  </div>
+
+  <div id="g-wire" style="display:none">
+    <div class="concept">
+      <div class="concept-label">APPLICATION 2</div>
+      <h3>E-field Due to Infinite Uniformly Charged Wire</h3>
+      <p>Gaussian surface: cylinder of radius r, length L, coaxial with wire</p>
+    </div>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg" style="max-width:400px;width:100%">
+        <defs>
+          <marker id="gwa" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="#4fc3f7"/></marker>
+        </defs>
+        <!-- wire (vertical) -->
+        <line x1="200" y1="10" x2="200" y2="230" stroke="#f06292" stroke-width="4"/>
+        <!-- dots on wire indicating charge -->
+        <text x="210" y="50" fill="#f06292" font-size="10">+</text>
+        <text x="210" y="80" fill="#f06292" font-size="10">+</text>
+        <text x="210" y="110" fill="#f06292" font-size="10">+</text>
+        <text x="210" y="140" fill="#f06292" font-size="10">+</text>
+        <text x="210" y="170" fill="#f06292" font-size="10">+</text>
+        <!-- gaussian cylinder (top ellipse) -->
+        <ellipse cx="200" cy="60" rx="80" ry="20" fill="none" stroke="#ffb74d" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <!-- gaussian cylinder sides -->
+        <line x1="120" y1="60" x2="120" y2="180" stroke="#ffb74d" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <line x1="280" y1="60" x2="280" y2="180" stroke="#ffb74d" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <!-- gaussian cylinder bottom -->
+        <ellipse cx="200" cy="180" rx="80" ry="20" fill="none" stroke="#ffb74d" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <!-- E arrows radially outward on curved surface -->
+        <line x1="280" y1="120" x2="330" y2="120" stroke="#4fc3f7" stroke-width="2" marker-end="url(#gwa)"/>
+        <text x="338" y="124" fill="#4fc3f7" font-size="11">E</text>
+        <!-- Labels -->
+        <text x="205" y="122" fill="#ffb74d" font-size="11">r</text>
+        <line x1="200" y1="120" x2="275" y2="120" stroke="#555" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="80" y="122" fill="#ffb74d" font-size="11">L</text>
+        <text x="55" y="140" fill="#ffb74d" font-size="11">Gaussian</text>
+        <text x="55" y="154" fill="#ffb74d" font-size="11">cylinder</text>
+      </svg>
+      <div class="diagram-caption">Cylindrical Gaussian surface coaxial with infinite wire; E is radial on curved surface, zero on end caps</div>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">DERIVATION</div>
+      <p style="color:var(--text);font-size:14px;line-height:1.8">
+        q_enc = λL<br>
+        Flux through curved surface = E × 2πrL<br>
+        Flux through end caps = 0 (E ⊥ normal on caps)<br><br>
+        By Gauss's law: E × 2πrL = λL/ε₀<br>
+      </p>
+      $$\\boxed{E = \\frac{\\lambda}{2\\pi\\epsilon_0 r} = \\frac{2k\\lambda}{r}}$$
+    </div>
+  </div>
+
+  <div id="g-sheet" style="display:none">
+    <div class="concept">
+      <div class="concept-label">APPLICATION 3</div>
+      <h3>E-field Due to Infinite Uniformly Charged Sheet</h3>
+      <p>Gaussian surface: cylinder (pillbox) of area A, penetrating the sheet symmetrically</p>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">DERIVATION</div>
+      <p style="color:var(--text);font-size:14px;line-height:1.8">
+        q_enc = σA<br>
+        Flux through both end caps = 2EA (by symmetry E is same on both sides)<br>
+        Flux through curved side = 0 (E ∥ surface)<br><br>
+        By Gauss's law: 2EA = σA/ε₀<br>
+      </p>
+      $$\\boxed{E = \\frac{\\sigma}{2\\epsilon_0}}$$
+      <p style="color:var(--muted);font-size:12px;margin-top:6px">E is uniform, perpendicular to sheet, independent of distance!</p>
+    </div>
+    <div class="key-point">
+      <div class="key-point-icon">💡</div>
+      <p><strong>Two parallel sheets (+σ and −σ):</strong> Between sheets: E = σ/ε₀; Outside: E = 0 (fields cancel)</p>
+    </div>
+  </div>
+
+  <div id="g-conductor" style="display:none">
+    <div class="concept">
+      <div class="concept-label">APPLICATION 4</div>
+      <h3>E Inside/On a Conductor</h3>
+    </div>
+    <div class="concept">
+      <h3>Properties of Conductors in Electrostatic Equilibrium</h3>
+      <ul>
+        <li>E = 0 inside a conductor</li>
+        <li>Any net charge resides on the surface</li>
+        <li>E just outside = σ/ε₀ (normal to surface)</li>
+        <li>Electric field lines are perpendicular to conductor surface</li>
+        <li>The entire conductor is an equipotential</li>
+        <li>Charge resides on <strong>outer surface</strong> (for a hollow conductor with no charge inside)</li>
+      </ul>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">E JUST OUTSIDE CONDUCTOR SURFACE</div>
+      $$E = \\frac{\\sigma}{\\epsilon_0}$$
+      <p style="color:var(--muted);font-size:12px;margin-top:6px">Compare with infinite sheet: conductor gives 2× field because charge can only be on one side.</p>
+    </div>
+  </div>
+  `
+},
+
+potential: {
+  title: "Electric Potential & Energy",
+  html: `
+  <div class="inner-tabs">
+    <button class="inner-tab active" onclick="innerTab(this,'p-potential')">Potential</button>
+    <button class="inner-tab" onclick="innerTab(this,'p-energy')">PE & Work</button>
+    <button class="inner-tab" onclick="innerTab(this,'p-equipotential')">Equipotential</button>
+  </div>
+
+  <div id="p-potential">
+    <div class="concept">
+      <div class="concept-label">DEFINITION</div>
+      <h3>Electric Potential</h3>
+      <p>Electric potential at a point is the work done per unit positive charge in bringing a test charge from infinity to that point (without kinetic energy change).</p>
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">ELECTRIC POTENTIAL</div>
+      $$V = \\frac{W_{\\infty\\to P}}{q_0} = -\\int_\\infty^P \\vec{E}\\cdot d\\vec{l}$$
+      $$\\text{Due to point charge: } V = \\frac{kq}{r}$$
+      $$\\text{Superposition: } V = \\sum_i \\frac{kq_i}{r_i} \\text{ (scalar sum)}$$
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">RELATION BETWEEN E AND V</div>
+      $$E = -\\frac{dV}{dr} \\quad (\\text{1D})$$
+      $$\\vec{E} = -\\nabla V = -\\left(\\frac{\\partial V}{\\partial x}\\hat{i} + \\frac{\\partial V}{\\partial y}\\hat{j} + \\frac{\\partial V}{\\partial z}\\hat{k}\\right)$$
+    </div>
+    <div class="key-point">
+      <div class="key-point-icon">💡</div>
+      <p>E points from high V to low V. E is perpendicular to equipotential surfaces. V is a scalar — superposition is much easier for potential than for field!</p>
+    </div>
+  </div>
+
+  <div id="p-energy" style="display:none">
+    <div class="formula-box">
+      <div class="formula-title">ELECTRIC POTENTIAL ENERGY</div>
+      $$U = qV = \\frac{kq_1 q_2}{r}$$
+      $$\\text{System of n charges: } U = \\sum_{i<j} \\frac{kq_i q_j}{r_{ij}}$$
+    </div>
+    <div class="formula-box">
+      <div class="formula-title">WORK-ENERGY THEOREM FOR CHARGES</div>
+      $$W_{ext} = \\Delta U = q(V_B - V_A) = q\\,V_{AB}$$
+      $$W_{electric} = -\\Delta U = q(V_A - V_B)$$
+      $$\\Delta KE = -\\Delta U \\text{ (conservative force)}$$
+    </div>
+    <div class="key-point">
+      <div class="key-point-icon">💡</div>
+      <p>Energy of a dipole in external field: U = −p⃗·E⃗ = −pE cosθ. At θ=0: U = −pE (stable), at θ=180°: U = +pE (unstable).</p>
+    </div>
+  </div>
+
+  <div id="p-equipotential" style="display:none">
+    <div class="concept">
+      <div class="concept-label">EQUIPOTENTIAL SURFACES</div>
+      <h3>Equipotential Surfaces</h3>
+      <p>Surfaces on which the electric potential is the same at every point. No work is done in moving a charge along an equipotential surface.</p>
+    </div>
+    <div class="concept">
+      <h3>Properties</h3>
+      <ul>
+        <li>E⃗ is always perpendicular to equipotential surface</li>
+        <li>Equipotentials never intersect each other</li>
+        <li>For point charge: spherical equipotential surfaces</li>
+        <li>For uniform field: planes perpendicular to E⃗</li>
+        <li>Conductor surface is an equipotential</li>
+        <li>Denser equipotentials → stronger field</li>
       </ul>
     </div>
   </div>
+  `
+},
 
-  <div class="pre-label">Writing a binary file</div>
-  <pre><code><span class="kw">import</span> pickle
-
-student = {<span class="st">"name"</span>: <span class="st">"Aanya"</span>, <span class="st">"roll"</span>: <span class="num">42</span>, <span class="st">"grade"</span>: <span class="st">"A"</span>}
-
-<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"student.dat"</span>, <span class="st">"wb"</span>) <span class="kw">as</span> f:
-    pickle.<span class="fn">dump</span>(student, f)    <span class="cm"># Serialise and save</span></code></pre>
-
-  <div class="pre-label">Reading a binary file (handling EOF)</div>
-  <pre><code><span class="kw">import</span> pickle
-
-<span class="kw">def</span> <span class="fn">DisplayAll</span>():
-    <span class="kw">with</span> <span class="fn">open</span>(<span class="st">"student.dat"</span>, <span class="st">"rb"</span>) <span class="kw">as</span> f:
-        <span class="kw">try</span>:
-            <span class="kw">while</span> <span class="kw">True</span>:
-                R = pickle.<span class="fn">load</span>(f)   <span class="cm"># Reads ONE object at a time</span>
-                <span class="fn">print</span>(R)
-        <span class="kw">except</span> EOFError:            <span class="cm"># Raised when file ends</span>
-            <span class="kw">pass</span></code></pre>
-
-  <div class="callout callout-danger">
-    <div class="callout-title">🚨 Must Know — EOFError</div>
-    <p>Binary files with multiple pickled objects require a <code>try…except EOFError</code> loop. When <code>pickle.load()</code> reaches the end of the file, it raises <code>EOFError</code> — without catching it, your program will crash.</p>
+conductors: {
+  title: "Conductors & Capacitors",
+  html: `
+  <div class="inner-tabs">
+    <button class="inner-tab active" onclick="innerTab(this,'c-cap')">Capacitance</button>
+    <button class="inner-tab" onclick="innerTab(this,'c-combo')">Combinations</button>
+    <button class="inner-tab" onclick="innerTab(this,'c-energy')">Energy Stored</button>
   </div>
-</div>
-
-<!-- 2.3 CRUD Operations -->
-<div class="subsection">
-  <h3 class="subsection-title"><span class="dot dot-amber"></span>CRUD Operations on Binary Files</h3>
-
-  <!-- Search -->
-  <div style="margin-bottom:24px">
-    <div style="font-weight:600;font-size:14px;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px"><span class="badge badge-blue">Search</span></div>
-    <p>Iterate through all records and compare the target field against each record.</p>
-    <div class="pre-label">Search by roll number</div>
-    <pre><code><span class="kw">def</span> <span class="fn">Search</span>(target):
-    found = <span class="kw">False</span>
-    <span class="kw">with</span> <span class="fn">open</span>(<span class="st">"student.dat"</span>, <span class="st">"rb"</span>) <span class="kw">as</span> f:
-        <span class="kw">try</span>:
-            <span class="kw">while</span> <span class="kw">True</span>:
-                R = pickle.<span class="fn">load</span>(f)
-                <span class="kw">if</span> R[<span class="st">"roll"</span>] == target:
-                    <span class="fn">print</span>(<span class="st">"Found:"</span>, R)
-                    found = <span class="kw">True</span>
-        <span class="kw">except</span> EOFError:
-            <span class="kw">pass</span>
-    <span class="kw">if not</span> found:
-        <span class="fn">print</span>(<span class="st">"Record not found"</span>)</code></pre>
-  </div>
-
-  <!-- Update / Delete Logic -->
-  <div>
-    <div style="font-weight:600;font-size:14px;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px">
-      <span class="badge badge-amber">Update</span><span class="badge badge-red">Delete</span>
+  <div id="c-cap">
+    <div class="formula-box">
+      <div class="formula-title">CAPACITANCE</div>
+      $$C = \\frac{Q}{V}$$
+      $$\\text{Parallel plate: } C = \\frac{\\epsilon_0 A}{d}$$
+      $$\\text{With dielectric: } C = \\frac{K\\epsilon_0 A}{d}$$
     </div>
-    <p>Since you can't edit a binary file in-place, you use the <strong>Temporary File Method</strong>:</p>
-
-    <div class="steps">
-      <div class="step"><div class="step-num">1</div><div class="step-text">Open original in <strong>rb</strong> and a new <code>temp.dat</code> in <strong>wb</strong></div></div>
-      <div class="step"><div class="step-num">2</div><div class="step-text">Loop through all records using <code>pickle.load()</code></div></div>
-      <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Update:</strong> modify the matching record, then <code>pickle.dump()</code> to temp &nbsp;|&nbsp; <strong>Delete:</strong> simply skip the target record</div></div>
-      <div class="step"><div class="step-num">4</div><div class="step-text">Close both files</div></div>
-      <div class="step"><div class="step-num">5</div><div class="step-text">Use <code>os.remove("original.dat")</code> then <code>os.rename("temp.dat", "original.dat")</code></div></div>
-    </div>
-
-    <div class="pre-label">Delete template</div>
-    <pre><code><span class="kw">import</span> pickle, os
-
-<span class="kw">def</span> <span class="fn">Delete</span>(target_roll):
-    records = []
-    <span class="cm"># Step 1: Load all records</span>
-    <span class="kw">with</span> <span class="fn">open</span>(<span class="st">"student.dat"</span>, <span class="st">"rb"</span>) <span class="kw">as</span> f:
-        <span class="kw">try</span>:
-            <span class="kw">while</span> <span class="kw">True</span>:
-                records.<span class="fn">append</span>(pickle.<span class="fn">load</span>(f))
-        <span class="kw">except</span> EOFError:
-            <span class="kw">pass</span>
-
-    <span class="cm"># Step 2: Write back — skipping the target</span>
-    <span class="kw">with</span> <span class="fn">open</span>(<span class="st">"temp.dat"</span>, <span class="st">"wb"</span>) <span class="kw">as</span> f:
-        <span class="kw">for</span> R <span class="kw">in</span> records:
-            <span class="kw">if</span> R[<span class="st">"roll"</span>] != target_roll:
-                pickle.<span class="fn">dump</span>(R, f)
-
-    <span class="cm"># Step 3: Replace original</span>
-    os.<span class="fn">remove</span>(<span class="st">"student.dat"</span>)
-    os.<span class="fn">rename</span>(<span class="st">"temp.dat"</span>, <span class="st">"student.dat"</span>)</code></pre>
-  </div>
-</div>
-
-<!-- ─────────────────────────────────────────── -->
-<!-- SECTION 3: CSV FILES -->
-<!-- ─────────────────────────────────────────── -->
-<div id="csv-files" class="section-divider sd-csv" style="margin-top:72px">
-  <div class="section-icon">📊</div>
-  <div class="section-num">Section 03</div>
-  <h2 class="section-title">CSV Files</h2>
-  <p class="section-desc">Comma Separated Values — a plain-text format for tabular data, handled in Python via the built-in <code>csv</code> module.</p>
-</div>
-
-<!-- 3.1 Key Characteristics -->
-<div class="subsection">
-  <h3 class="subsection-title"><span class="dot dot-green"></span>Key Characteristics</h3>
-  <div class="card-grid">
-    <div class="card">
-      <div class="card-icon">📋</div>
-      <div class="card-title">Tabular Format</div>
-      <div class="card-desc">Stores data in rows and columns — exactly like a spreadsheet — using plain ASCII text.</div>
-    </div>
-    <div class="card">
-      <div class="card-icon">⚡</div>
-      <div class="card-title">Lightweight</div>
-      <div class="card-desc">Smaller in size and faster to process compared to full spreadsheet formats.</div>
-    </div>
-    <div class="card">
-      <div class="card-icon">🔁</div>
-      <div class="card-title">Character Translation</div>
-      <div class="card-desc">Like text files, EOL translation occurs during read/write operations.</div>
-    </div>
-    <div class="card">
-      <div class="card-icon">🔓</div>
-      <div class="card-title">Less Secure</div>
-      <div class="card-desc">Plain text — easily opened and modified without special software.</div>
+    <div class="concept">
+      <h3>Effect of Dielectric Slab (thickness t) in Gap d</h3>
+      $$C = \\frac{\\epsilon_0 A}{d - t + t/K}$$
     </div>
   </div>
-</div>
-
-<!-- 3.2 Opening CSV Files -->
-<div class="subsection">
-  <h3 class="subsection-title"><span class="dot dot-green"></span>Opening CSV Files — The Crucial Nuance</h3>
-  <div class="callout callout-danger">
-    <div class="callout-title">🚨 Critical — newline='' when Writing</div>
-    <p>When opening a CSV file for <strong>writing</strong>, always pass <code>newline=''</code>. Without it, Python inserts an extra blank line between every row because of how Windows handles line endings.</p>
-  </div>
-  <div class="compare">
-    <div class="compare-card">
-      <div class="compare-card-title" style="color:var(--green)">Writing</div>
-      <pre style="margin:0;padding:10px 14px;font-size:12px"><code>F = <span class="fn">open</span>(<span class="st">"data.csv"</span>, <span class="st">'w'</span>, <span class="kw">newline</span>=<span class="st">''</span>)</code></pre>
+  <div id="c-combo" style="display:none">
+    <div class="formula-box">
+      <div class="formula-title">SERIES COMBINATION</div>
+      $$\\frac{1}{C_{eq}} = \\frac{1}{C_1} + \\frac{1}{C_2} + \\ldots$$
+      <p style="color:var(--muted);font-size:12px;margin-top:6px">Same Q on each capacitor; Voltages add up.</p>
     </div>
-    <div class="compare-card">
-      <div class="compare-card-title" style="color:var(--blue)">Reading</div>
-      <pre style="margin:0;padding:10px 14px;font-size:12px"><code>F = <span class="fn">open</span>(<span class="st">"data.csv"</span>, <span class="st">'r'</span>)</code></pre>
+    <div class="formula-box">
+      <div class="formula-title">PARALLEL COMBINATION</div>
+      $$C_{eq} = C_1 + C_2 + \\ldots$$
+      <p style="color:var(--muted);font-size:12px;margin-top:6px">Same V across each; Charges add up.</p>
     </div>
   </div>
-</div>
-
-<!-- 3.3 Writing -->
-<div class="subsection">
-  <h3 class="subsection-title"><span class="dot dot-green"></span>Writing to a CSV File</h3>
-  <p>Create a <strong>writer object</strong> first, then use it to write rows.</p>
-
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Function</th><th>Input</th><th>Writes</th><th>Nuance</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><code>csv.writer(file, delimiter)</code></td>
-          <td>File object</td>
-          <td>Writer object</td>
-          <td>Default delimiter is comma <code>','</code></td>
-        </tr>
-        <tr>
-          <td><code>writerow(list)</code></td>
-          <td>A single List</td>
-          <td>One row</td>
-          <td>Each list element becomes one field</td>
-        </tr>
-        <tr>
-          <td><code>writerows(nested_list)</code></td>
-          <td>List of lists</td>
-          <td>Multiple rows at once</td>
-          <td>Best for bulk/batch writing</td>
-        </tr>
-      </tbody>
-    </table>
+  <div id="c-energy" style="display:none">
+    <div class="formula-box">
+      <div class="formula-title">ENERGY STORED IN CAPACITOR</div>
+      $$U = \\frac{1}{2}QV = \\frac{Q^2}{2C} = \\frac{1}{2}CV^2$$
+      $$\\text{Energy density: } u = \\frac{1}{2}\\epsilon_0 E^2$$
+    </div>
+    <div class="key-point">
+      <div class="key-point-icon">💡</div>
+      <p><strong>Energy loss when capacitors share charge:</strong> ΔU = C₁C₂(V₁−V₂)²/[2(C₁+C₂)]. Energy is always lost (as heat) when charge redistributes.</p>
+    </div>
   </div>
+  `
+}
+};
 
-  <div class="pre-label">Write example</div>
-  <pre><code><span class="kw">import</span> csv
+// ============================================================
+// FLASHCARD DATA
+// ============================================================
+const flashcards = [
+  {q:"What is the charge on one electron?", a:"e = −1.6 × 10⁻¹⁹ C. It's the smallest charge that can exist independently."},
+  {q:"State Coulomb's Law", a:"F = kQ₁Q₂/r². Force ∝ Q₁Q₂ and ∝ 1/r². Acts along line joining charges."},
+  {q:"What is permittivity? How does a medium affect Coulomb force?", a:"Permittivity allows E-field to pass through. In medium: F = F_vac/εᵣ. Water has εᵣ = 81."},
+  {q:"E-field on axial line of dipole (short dipole)", a:"E_axial = 2kp/r³, direction: same as p⃗"},
+  {q:"E-field on equatorial line of dipole", a:"E_eq = kp/r³, direction: opposite to p⃗ (anti-parallel)"},
+  {q:"Torque on dipole in uniform field", a:"τ = pE sinθ = p⃗ × E⃗"},
+  {q:"State Gauss's Law", a:"∮ E·dS = q_enc/ε₀. Total flux through closed surface = enclosed charge / ε₀"},
+  {q:"E-field inside a conductor in electrostatic equilibrium", a:"E = 0 inside. Any charge resides on outer surface."},
+  {q:"E just outside conductor surface", a:"E = σ/ε₀ (perpendicular to surface)"},
+  {q:"E due to infinite uniformly charged wire", a:"E = λ/(2πε₀r) = 2kλ/r, directed radially outward"},
+  {q:"E due to infinite plane sheet of charge", a:"E = σ/(2ε₀), uniform and perpendicular to sheet"},
+  {q:"E on axis of uniformly charged ring at distance x", a:"E = kQx/(x²+a²)^(3/2). Max at x = a/√2."},
+  {q:"Solid angle subtended at interior point of any closed surface", a:"4π steradians"},
+  {q:"Flux through a closed surface due to external charge", a:"Zero (since solid angle = 0 for exterior point)"},
+  {q:"Electric potential due to point charge", a:"V = kq/r (scalar, can be +ve or −ve)"},
+  {q:"Relation between E and V", a:"E = −dV/dr. E points from high V to low V."},
+  {q:"Energy stored in a capacitor", a:"U = ½CV² = Q²/(2C) = ½QV"},
+  {q:"Capacitance of parallel plate capacitor", a:"C = ε₀A/d. With dielectric: C = Kε₀A/d"},
+  {q:"What is quantisation of charge?", a:"q = ±ne (n=0,1,2,...). Charge comes in integer multiples of e."},
+  {q:"Null point for +q and +4q separated by d", a:"At d/3 from +q (between the two charges)"}
+];
 
-data = [
-    [<span class="st">"Name"</span>, <span class="st">"Roll"</span>, <span class="st">"Grade"</span>],
-    [<span class="st">"Aanya"</span>, <span class="num">1</span>, <span class="st">"A"</span>],
-    [<span class="st">"Rohan"</span>, <span class="num">2</span>, <span class="st">"B+"</span>],
-]
+// ============================================================
+// JEE QUIZ DATA (PYQ Pattern)
+// ============================================================
+const quizData = [
+  {
+    type:"Single Correct",
+    q:"A charge Q is placed at the corner of a cube. The electric flux through one of the faces NOT containing that charge is:",
+    opts:["Q/(6ε₀)","Q/(8ε₀)","Q/(24ε₀)","Q/(48ε₀)"],
+    ans:2,
+    explain:"The charge at corner is shared by 8 cubes → total flux = Q/ε₀ → flux per cube = Q/(8ε₀). The cube has 3 faces containing the charge and 3 faces not containing it. Flux through each of the 3 non-adjacent faces = Q/(8ε₀) × (1/3) = Q/(24ε₀)."
+  },
+  {
+    type:"Single Correct",
+    q:"The electric field on the axis of a uniformly charged ring is maximum at a distance x from the centre. If the ring has radius a, what is x?",
+    opts:["a","a/√2","a/2","a√2"],
+    ans:1,
+    explain:"E = kQx/(x²+a²)^(3/2). Differentiate and set dE/dx = 0: gives (x²+a²)^(3/2) − x·(3/2)(x²+a²)^(1/2)·2x = 0 → x² = a²/2 → x = a/√2."
+  },
+  {
+    type:"Single Correct",
+    q:"Two point charges +q and −4q are separated by a distance d. A third charge is placed on the line joining them such that all three are in equilibrium. The third charge should be placed:",
+    opts:["Between the two charges at d/3 from +q","Outside, at d from +q on its side","Outside, at d/2 from +q on its side","Between at 2d/3 from +q"],
+    ans:1,
+    explain:"For unlike charges, null point is outside on the side of smaller charge. Let x = distance from +q (outside). kq/x² = 4kq/(x+d)² → (x+d)² = 4x² → x+d = 2x → x = d. So at distance d from +q, outside, on the side of +q."
+  },
+  {
+    type:"Single Correct",
+    q:"A dipole with moment p is placed in a uniform electric field E. The minimum energy configuration is at angle θ to E. What is U?",
+    opts:["0","−pE","pE","+2pE"],
+    ans:1,
+    explain:"U = −pE cosθ. Minimum at θ=0° (p parallel to E): U = −pE cosθ = −pE. This is stable equilibrium."
+  },
+  {
+    type:"Single Correct",
+    q:"An infinite line charge produces electric field of 9×10⁴ N/C at a distance of 2 cm. The linear charge density λ is:",
+    opts:["10 μC/m","100 μC/m","100 nC/m","10 nC/m"],
+    ans:0,
+    explain:"E = λ/(2πε₀r) → λ = E×2πε₀r = 9×10⁴ × 2π × 8.85×10⁻¹² × 0.02 ≈ 10×10⁻⁶ C/m = 10 μC/m."
+  },
+  {
+    type:"Single Correct",
+    q:"The work done in bringing a unit positive charge from infinity to a point at distance r from a positive charge Q is:",
+    opts:["kQ/r²","kQ/r","−kQ/r","Zero"],
+    ans:1,
+    explain:"Work done = V(r) − V(∞) = kQ/r − 0 = kQ/r. This is positive (work must be done against repulsion)."
+  },
+  {
+    type:"Single Correct",
+    q:"Two conducting spheres of radii r₁ and r₂ carry the same charge Q each. They are connected by a conducting wire. Charge flows until equilibrium. The ratio of surface charge densities σ₁:σ₂ is:",
+    opts:["r₂:r₁","r₁:r₂","r₂²:r₁²","r₁²:r₂²"],
+    ans:0,
+    explain:"At equilibrium, they are at same potential: kQ₁'/r₁ = kQ₂'/r₂ → Q₁'/Q₂' = r₁/r₂. Surface charge density σ = Q/(4πr²). σ₁/σ₂ = (Q₁'/r₁²)/(Q₂'/r₂²) = (r₁/r₂)×(r₂²/r₁²) = r₂/r₁."
+  },
+  {
+    type:"Single Correct",
+    q:"A hollow metallic sphere of radius R has charge Q on it. A small charge q is placed at its centre. The electric field at a point at distance r from the centre (r < R) is:",
+    opts:["Zero","kq/r²","k(Q+q)/r²","kQ/R²"],
+    ans:1,
+    explain:"Inside the conductor shell, E is due to the charge at the centre only (Gauss's law with Gaussian surface inside shell: q_enc = q). E = kq/r²."
+  },
+  {
+    type:"Single Correct",
+    q:"The energy stored in a parallel plate capacitor with area A, separation d, and charge Q is doubled by:",
+    opts:["Doubling Q","Doubling d","Halving A","Both B and C"],
+    ans:3,
+    explain:"U = Q²/(2C) = Q²d/(2ε₀A). To double U (keeping Q constant): either double d or halve A. Both B and C work."
+  },
+  {
+    type:"Single Correct",
+    q:"A charged particle (charge q, mass m) is released from rest in uniform E. If it covers distance s in time t, then the electric field is:",
+    opts:["2ms/(qt²)","ms/(qt²)","2ms²/(qt)","ms/(2qt²)"],
+    ans:0,
+    explain:"a = qE/m; s = ½at² → s = ½(qE/m)t² → E = 2ms/(qt²)."
+  },
+  {
+    type:"Single Correct",
+    q:"The electric field inside a uniformly charged solid sphere of radius R at distance r from centre is:",
+    opts:["kQ/r²","kQr/R³","Zero","kQ/R²"],
+    ans:1,
+    explain:"Gaussian surface of radius r<R encloses charge q_enc = Q(r/R)³. By Gauss's law: E(4πr²) = Q(r/R)³/ε₀ → E = kQr/R³. Linearly proportional to r."
+  },
+  {
+    type:"Single Correct",
+    q:"Two identical capacitors are first connected in series, then in parallel. The ratio of equivalent capacitance C_series : C_parallel is:",
+    opts:["1:4","4:1","1:2","2:1"],
+    ans:0,
+    explain:"C_series = C/2 (for two identical C); C_parallel = 2C. Ratio = (C/2)/(2C) = 1:4."
+  }
+];
 
-<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"students.csv"</span>, <span class="st">'w'</span>, newline=<span class="st">''</span>) <span class="kw">as</span> f:
-    writer = csv.<span class="fn">writer</span>(f)
-    writer.<span class="fn">writerow</span>(data[<span class="num">0</span>])       <span class="cm"># Write header row</span>
-    writer.<span class="fn">writerows</span>(data[<span class="num">1</span>:])     <span class="cm"># Write all data rows at once</span></code></pre>
-</div>
+// ============================================================
+// NAV LOGIC
+// ============================================================
+function showSection(id){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach((t,i)=>{
+    t.classList.toggle('active', t.textContent.trim().toLowerCase().startsWith(id.substring(0,3)));
+  });
+  if(id==='flashcards') renderFlashcards();
+  if(id==='quiz') renderQuiz();
+  if(id==='formulas') renderFormulas();
+}
+// fix nav tab highlight
+document.querySelectorAll('.nav-tab').forEach(t=>{
+  t.addEventListener('click', function(){
+    document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
 
-<!-- 3.4 Reading -->
-<div class="subsection">
-  <h3 class="subsection-title"><span class="dot dot-green"></span>Reading from a CSV File</h3>
-  <p>Create a <strong>reader object</strong>, then iterate over it with a <code>for</code> loop. Each row is returned as a <strong>List of strings</strong>.</p>
+// ============================================================
+// TOPIC LOGIC
+// ============================================================
+function showTopic(id){
+  const t = topics[id];
+  if(!t) return;
+  document.getElementById('panel-title').textContent = t.title;
+  document.getElementById('panel-body').innerHTML = t.html;
+  document.getElementById('topic-list').style.display='none';
+  document.getElementById('topic-content').style.display='block';
+  window.scrollTo({top:80, behavior:'smooth'});
+  // Typeset math
+  if(window.MathJax) MathJax.typesetPromise();
+}
+function backToTopics(){
+  document.getElementById('topic-list').style.display='block';
+  document.getElementById('topic-content').style.display='none';
+}
+function innerTab(el, targetId){
+  const panel = el.closest('.panel-body') || document.getElementById('panel-body');
+  // hide all inner tab content
+  panel.querySelectorAll('[id]').forEach(el=>{
+    if(el.id.includes('-') && !el.id.startsWith('ct-') && !el.id.startsWith('cl-') && !el.id.startsWith('d-')
+     && !el.id.startsWith('ef-') && !el.id.startsWith('m-') && !el.id.startsWith('fx-') && !el.id.startsWith('g-')
+     && !el.id.startsWith('p-') && !el.id.startsWith('c-') && !el.id.startsWith('dp-')) return;
+    el.style.display='none';
+  });
+  // show target
+  const target = document.getElementById(targetId);
+  if(target) target.style.display='block';
+  // update tab active
+  el.closest('.inner-tabs').querySelectorAll('.inner-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  if(window.MathJax) MathJax.typesetPromise();
+}
 
-  <div class="callout callout-warning">
-    <div class="callout-title">⚠ Data Type Warning</div>
-    <p>CSV always returns data as <strong>strings</strong>. If you need to do arithmetic, convert first: <code>int(row[1])</code>, <code>float(row[2])</code>. Forgetting this is a very common exam mistake.</p>
-  </div>
+// ============================================================
+// FLASHCARD LOGIC
+// ============================================================
+function renderFlashcards(){
+  const grid = document.getElementById('flashcard-grid');
+  grid.innerHTML = flashcards.map((f,i)=>`
+    <div class="fc" id="fc-${i}" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="q-label">QUESTION</div>
+          <p>${f.q}</p>
+        </div>
+        <div class="fc-back">
+          <div class="a-label">ANSWER</div>
+          <p>${f.a}</p>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  if(window.MathJax) MathJax.typesetPromise();
+}
 
-  <div class="pre-label">Read example with calculation</div>
-  <pre><code><span class="kw">import</span> csv
+// ============================================================
+// QUIZ LOGIC
+// ============================================================
+let quizState = {current:0, score:0, correct:0, wrong:0, answered:false, done:false};
+function renderQuiz(){
+  quizState = {current:0, score:0, correct:0, wrong:0, answered:false, done:false};
+  showQuizQuestion();
+}
+function showQuizQuestion(){
+  const c = document.getElementById('quiz-container');
+  if(quizState.done){ showResult(); return; }
+  const q = quizData[quizState.current];
+  const prog = ((quizState.current)/quizData.length)*100;
+  c.innerHTML = `
+    <div class="quiz-progress"><div class="quiz-progress-inner" style="width:${prog}%"></div></div>
+    <div class="quiz-header">
+      <div class="quiz-num">Question ${quizState.current+1} of ${quizData.length}</div>
+      <div class="quiz-score-live">Score: ${quizState.score}</div>
+    </div>
+    <div class="quiz-question">
+      <div class="quiz-q-type">JEE PATTERN — ${q.type} — +4/−1</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-options">
+        ${q.opts.map((o,i)=>`<button class="quiz-opt" id="qopt-${i}" onclick="answerQ(${i})">${String.fromCharCode(65+i)}) ${o}</button>`).join('')}
+      </div>
+      <div class="quiz-feedback" id="quiz-feedback"></div>
+    </div>
+    <div class="quiz-nav">
+      <button class="btn btn-outline" onclick="skipQ()">Skip →</button>
+    </div>
+  `;
+  if(window.MathJax) MathJax.typesetPromise();
+}
+function answerQ(idx){
+  if(quizState.answered) return;
+  quizState.answered = true;
+  const q = quizData[quizState.current];
+  const correct = idx === q.ans;
+  document.querySelectorAll('.quiz-opt').forEach((btn,i)=>{
+    btn.disabled = true;
+    if(i===q.ans) btn.classList.add('correct');
+    if(i===idx && !correct) btn.classList.add('wrong');
+  });
+  const fb = document.getElementById('quiz-feedback');
+  fb.classList.add('show');
+  if(correct){
+    quizState.score += 4;
+    quizState.correct++;
+    fb.innerHTML = `<div class="feedback-correct">✓ Correct! +4 marks</div><div class="feedback-explain">${q.explain}</div>`;
+  } else {
+    quizState.score -= 1;
+    quizState.wrong++;
+    fb.innerHTML = `<div class="feedback-wrong">✗ Incorrect. −1 mark. Correct: ${String.fromCharCode(65+q.ans)}</div><div class="feedback-explain">${q.explain}</div>`;
+  }
+  document.querySelector('.quiz-nav').innerHTML = `
+    <button class="btn btn-primary" onclick="nextQ()">Next →</button>
+  `;
+  if(window.MathJax) MathJax.typesetPromise();
+}
+function skipQ(){
+  quizState.current++;
+  quizState.answered = false;
+  if(quizState.current >= quizData.length){ quizState.done=true; }
+  showQuizQuestion();
+}
+function nextQ(){
+  quizState.current++;
+  quizState.answered = false;
+  if(quizState.current >= quizData.length){ quizState.done=true; }
+  showQuizQuestion();
+}
+function showResult(){
+  const skipped = quizData.length - quizState.correct - quizState.wrong;
+  const max = quizData.length * 4;
+  const pct = Math.round((quizState.score/max)*100);
+  let grade = pct>=80?'Excellent! 🎉':pct>=60?'Good work! 👍':pct>=40?'Keep practising 💪':'Review the theory 📚';
+  document.getElementById('quiz-container').innerHTML = `
+    <div class="quiz-result fade-in">
+      <div class="result-score">${quizState.score}/${max}</div>
+      <div class="result-label">${grade}</div>
+      <div class="result-breakdown">
+        <div class="rb-item"><div class="rb-num correct-color">${quizState.correct}</div><div class="rb-text">Correct</div></div>
+        <div class="rb-item"><div class="rb-num wrong-color">${quizState.wrong}</div><div class="rb-text">Wrong</div></div>
+        <div class="rb-item"><div class="rb-num skip-color">${skipped}</div><div class="rb-text">Skipped</div></div>
+      </div>
+      <button class="btn btn-primary" onclick="renderQuiz()">Try Again</button>
+    </div>
+  `;
+}
 
-<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"marks.csv"</span>, <span class="st">'r'</span>) <span class="kw">as</span> f:
-    reader = csv.<span class="fn">reader</span>(f)
-    <span class="kw">for</span> row <span class="kw">in</span> reader:
-        <span class="fn">print</span>(row)                          <span class="cm"># Each row is a List</span>
-        total = <span class="fn">int</span>(row[<span class="num">1</span>]) + <span class="fn">int</span>(row[<span class="num">2</span>])  <span class="cm"># Must convert to int</span>
-        <span class="fn">print</span>(<span class="st">"Total:"</span>, total)</code></pre>
-</div>
-
-<!-- 3.5 Common Patterns -->
-<div class="subsection">
-  <h3 class="subsection-title"><span class="dot dot-green"></span>Common Logic Patterns</h3>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Task</th><th>Pattern</th></tr></thead>
-      <tbody>
-        <tr>
-          <td>Count records</td>
-          <td>Init counter = 0; increment inside the <code>for</code> loop</td>
-        </tr>
-        <tr>
-          <td>Search</td>
-          <td>Check <code>if row[i] == target</code> inside the loop</td>
-        </tr>
-        <tr>
-          <td>Sum / Average</td>
-          <td>Convert field: <code>int(row[i])</code> or <code>float(row[i])</code> before adding</td>
-        </tr>
-        <tr>
-          <td>Skip header</td>
-          <td>Call <code>next(reader)</code> once before the loop, or use index slicing</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- ─────────────────────────────────────────── -->
-<!-- MASTER COMPARISON TABLE -->
-<!-- ─────────────────────────────────────────── -->
-<hr class="divider">
-<div class="subsection">
-  <h3 class="subsection-title" style="font-size:20px;color:var(--text)">
-    <span class="dot" style="width:10px;height:10px;background:var(--purple);border-radius:50%;display:inline-block"></span>
-    Master Comparison Table
-  </h3>
-  <p>Quick reference for the <em>three file types</em> — most likely to appear in exam theory questions.</p>
-
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Text File</th>
-          <th>Binary File</th>
-          <th>CSV File</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Extension</td>
-          <td><code>.txt</code></td>
-          <td><code>.dat</code></td>
-          <td><code>.csv</code></td>
-        </tr>
-        <tr>
-          <td>Human readable</td>
-          <td>✅ Yes</td>
-          <td>❌ No</td>
-          <td>✅ Yes</td>
-        </tr>
-        <tr>
-          <td>EOL translation</td>
-          <td>Yes</td>
-          <td>No</td>
-          <td>Yes</td>
-        </tr>
-        <tr>
-          <td>Module needed</td>
-          <td>None (built-in)</td>
-          <td><code>pickle</code></td>
-          <td><code>csv</code></td>
-        </tr>
-        <tr>
-          <td>Store Python objects</td>
-          <td>Manual conversion needed</td>
-          <td>Yes, directly</td>
-          <td>Strings only (manual conversion)</td>
-        </tr>
-        <tr>
-          <td>Write function</td>
-          <td><code>write()</code>, <code>writelines()</code></td>
-          <td><code>pickle.dump()</code></td>
-          <td><code>writerow()</code>, <code>writerows()</code></td>
-        </tr>
-        <tr>
-          <td>Read function</td>
-          <td><code>read()</code>, <code>readlines()</code></td>
-          <td><code>pickle.load()</code></td>
-          <td><code>for row in reader</code></td>
-        </tr>
-        <tr>
-          <td>EOF handling</td>
-          <td>Empty string / <code>for</code> loop</td>
-          <td><strong>try…except EOFError</strong></td>
-          <td>Loop ends naturally</td>
-        </tr>
-        <tr>
-          <td>Mode suffix</td>
-          <td><code>r</code>, <code>w</code>, <code>a</code> …</td>
-          <td><code>rb</code>, <code>wb</code>, <code>ab</code> …</td>
-          <td><code>r</code>, <code>w</code> (+ <code>newline=''</code>)</td>
-        </tr>
-        <tr>
-          <td>Use case</td>
-          <td>Logs, configs, plain text</td>
-          <td>Complex objects, dicts, lists</td>
-          <td>Tabular / spreadsheet data</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- Quick Exam Tips -->
-<div class="summary-strip" style="margin-top:40px">
-  <h4>⚡ Exam Quick-Fire Reminders</h4>
-  <div class="strip-row">
-    <div class="strip-item"><code>write()</code><span class="arr">→</span>does NOT add <code>\n</code></div>
-    <div class="strip-item"><code>writelines()</code><span class="arr">→</span>does NOT add <code>\n</code></div>
-    <div class="strip-item"><code>readlines()</code><span class="arr">→</span>returns a <strong>List</strong></div>
-    <div class="strip-item"><code>'w'</code> mode<span class="arr">→</span>truncates immediately</div>
-    <div class="strip-item"><code>'a+'</code><span class="arr">→</span>use <code>seek(0)</code> to read</div>
-    <div class="strip-item"><code>EOFError</code><span class="arr">→</span>only in binary files</div>
-    <div class="strip-item">CSV data<span class="arr">→</span>always strings, convert for math</div>
-    <div class="strip-item"><code>newline=''</code><span class="arr">→</span>only when writing CSV</div>
-    <div class="strip-item">Update/Delete<span class="arr">→</span>temp file method</div>
-  </div>
-</div>
-
-</main>
+// ============================================================
+// FORMULA SHEET
+// ============================================================
+const formulaRows = [
+  ["Coulomb's Law","\\(F = \\dfrac{kQ_1Q_2}{r^2}\\), \\(k=9\\times10^9\\) N·m²/C²"],
+  ["In medium","\\(F_m = \\dfrac{F_{vac}}{\\epsilon_r}\\)"],
+  ["Electric Field (point)","\\(E = \\dfrac{kq}{r^2}\\)"],
+  ["Superposition (E)","\\(\\vec{E}_{net} = \\sum \\vec{E}_i\\)"],
+  ["Ring (axial)","\\(E = \\dfrac{kQx}{(x^2+a^2)^{3/2}}\\), max at \\(x=a/\\sqrt{2}\\)"],
+  ["Uniformly charged arc","\\(E = \\dfrac{2k\\lambda\\sin\\alpha}{R}\\)"],
+  ["Infinite wire","\\(E = \\dfrac{\\lambda}{2\\pi\\epsilon_0 r} = \\dfrac{2k\\lambda}{r}\\)"],
+  ["Infinite sheet","\\(E = \\dfrac{\\sigma}{2\\epsilon_0}\\)"],
+  ["Disc (axial)","\\(E = \\dfrac{\\sigma}{2\\epsilon_0}\\left(1-\\dfrac{x}{\\sqrt{x^2+R^2}}\\right)\\)"],
+  ["Dipole moment","\\(p = q(2a)\\), direction −q → +q"],
+  ["Dipole (axial)","\\(E_{ax} = \\dfrac{2kp}{r^3}\\) (short dipole)"],
+  ["Dipole (equatorial)","\\(E_{eq} = \\dfrac{kp}{r^3}\\), opposite to p⃗"],
+  ["Dipole torque","\\(\\tau = pE\\sin\\theta\\)"],
+  ["Dipole PE","\\(U = -pE\\cos\\theta\\)"],
+  ["Gauss's Law","\\(\\oint \\vec{E}\\cdot d\\vec{S} = q_{enc}/\\epsilon_0\\)"],
+  ["Spherical shell (outside)","\\(E = kQ/r^2\\)"],
+  ["Spherical shell (inside)","\\(E = 0\\)"],
+  ["Solid sphere (inside)","\\(E = kQr/R^3\\)"],
+  ["Conductor surface","\\(E = \\sigma/\\epsilon_0\\)"],
+  ["Electric Potential","\\(V = kq/r\\), unit V (Volt)"],
+  ["E from V","\\(E = -dV/dr\\)"],
+  ["Work done","\\(W = q(V_A - V_B) = q V_{AB}\\)"],
+  ["Capacitance","\\(C = Q/V\\), \\(C_0 = \\epsilon_0 A/d\\)"],
+  ["With dielectric","\\(C = K\\epsilon_0 A/d\\)"],
+  ["Series","\\(1/C_{eq} = \\sum 1/C_i\\)"],
+  ["Parallel","\\(C_{eq} = \\sum C_i\\)"],
+  ["Energy in capacitor","\\(U = \\tfrac{1}{2}CV^2 = Q^2/(2C)\\)"],
+  ["Energy density","\\(u = \\tfrac{1}{2}\\epsilon_0 E^2\\)"],
+];
+function renderFormulas(){
+  const t = document.getElementById('formula-table');
+  t.innerHTML = `<tr><th>Formula / Law</th><th>Expression</th></tr>` +
+    formulaRows.map(r=>`<tr><td style="color:var(--accent4);font-weight:600;white-space:nowrap">${r[0]}</td><td>${r[1]}</td></tr>`).join('');
+  if(window.MathJax) MathJax.typesetPromise();
+}
+</script>
 </body>
 </html>
